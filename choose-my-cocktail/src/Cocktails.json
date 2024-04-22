@@ -1,0 +1,76 @@
+[
+    {
+      "nom": "Mojito",
+      "ingredients": [
+        {
+          "nom": "Rhum blanc",
+          "dose": "6 cl"
+        },
+        {
+          "nom": "Jus de citron vert",
+          "dose": "3 cl"
+        },
+        {
+          "nom": "Feuilles de menthe",
+          "dose": "6 feuilles"
+        },
+        {
+          "nom": "Sucre de canne",
+          "dose": "2 cuillères à café"
+        },
+        {
+          "nom": "Eau gazeuse",
+          "dose": "Quantité suffisante"
+        },
+        {
+          "nom": "Glaçons",
+          "dose": "Quantité suffisante"
+        }
+      ],
+      "description": "Le Mojito est un cocktail à base de rhum, de citron vert, de menthe fraîche, de sucre de canne et d'eau gazeuse. Il est très rafraîchissant et populaire dans le monde entier."
+    },
+
+    {
+      "nom": "Cosmopolitan",
+      "ingredients": [
+        {
+          "nom": "Vodka",
+          "dose": "4 cl"
+        },
+        {
+          "nom": "Triple sec",
+          "dose": "2 cl"
+        },
+        {
+          "nom": "Jus de cranberry",
+          "dose": "2 cl"
+        },
+        {
+          "nom": "Jus de citron vert",
+          "dose": "1 cl"
+        }
+      ],
+      "description": "Le Cosmopolitan est un cocktail à base de vodka, de triple sec, de jus de cranberry et de jus de citron vert. Il est apprécié pour son goût acidulé et sa couleur rose caractéristique."
+    },
+
+    {
+      "nom": "Piña Colada",
+      "ingredients": [
+        {
+          "nom": "Rhum blanc",
+          "dose": "5 cl"
+        },
+        {
+          "nom": "Jus d'ananas",
+          "dose": "12 cl"
+        },
+        {
+          "nom": "Lait de coco",
+          "dose": "3 cl"
+        }
+      ],
+      "description": "La Piña Colada est un cocktail à base de rhum blanc, de jus d'ananas et de lait de coco. Originaire de Porto Rico, ce cocktail tropical est parfait pour se sentir en vacances."
+    }
+
+  ]
+  
