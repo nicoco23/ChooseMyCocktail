@@ -3,7 +3,7 @@
       "nom": "Mojito",
       "ingredients": [
         {
-          "nom": "Rhum blanc",
+          "alcool": "Rhum blanc",
           "dose": "6 cl"
         },
         {
@@ -34,11 +34,11 @@
       "nom": "Cosmopolitan",
       "ingredients": [
         {
-          "nom": "Vodka",
+          "alcool": "Vodka",
           "dose": "4 cl"
         },
         {
-          "nom": "Triple sec",
+          "alcool": "Triple sec",
           "dose": "2 cl"
         },
         {
@@ -57,7 +57,7 @@
       "nom": "Piña Colada",
       "ingredients": [
         {
-          "nom": "Rhum blanc",
+          "alcool": "Rhum blanc",
           "dose": "5 cl"
         },
         {
@@ -70,7 +70,25 @@
         }
       ],
       "description": "La Piña Colada est un cocktail à base de rhum blanc, de jus d'ananas et de lait de coco. Originaire de Porto Rico, ce cocktail tropical est parfait pour se sentir en vacances."
-    }
+    },
 
+    {
+      "nom": "Margarita",
+      "ingredients": [
+        {
+          "alcool": "Tequila",
+          "dose": "5 cl"
+        },
+        {
+          "alcool": "Triple sec",
+          "dose": "3 cl"
+        },
+        {
+          "nom": "Jus de citron vert",
+          "dose": "2 cl"
+        }
+      ],
+      "description": "La Margarita est un cocktail à base de tequila, de triple sec et de jus de citron vert. Il est servi dans un verre à cocktail avec du sel sur le bord. C'est un cocktail classique et rafraîchissant."
+    }
   ]
   

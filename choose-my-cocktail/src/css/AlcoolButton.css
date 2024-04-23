@@ -1,0 +1,5 @@
+.selected {
+    background-color: #4CAF50; /* Couleur de fond verte pour indiquer la sélection */
+    color: white; /* Couleur du texte blanc pour contraster avec la couleur de fond */
+  }
+  
