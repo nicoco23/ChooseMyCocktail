@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Ingredient from './components/Ingredients';
+import Ingredient from '../components/Ingredients';
 
 function AllCocktailsPage({ cocktails }) {
   return (
