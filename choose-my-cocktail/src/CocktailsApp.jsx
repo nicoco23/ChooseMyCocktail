@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import AlcoholButton from './AlcoolButton';
+import AlcoholButton from './components/AlcoolButton';
+import Ingredient from './components/Ingredients';
 
 function CocktailsApp() {
   const [cocktails, setCocktails] = useState([]);
@@ -10,7 +11,6 @@ function CocktailsApp() {
     // Charger les cocktails à partir du fichier JSON
     const data = require('./Cocktails.json');
     setCocktails(data);
-    setFilteredCocktails(data); // Initialiser les cocktails filtrés avec tous les cocktails
   }, []);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function CocktailsApp() {
       setFilteredCocktails(cocktails); // Si aucun alcool n'est sélectionné, afficher tous les cocktails
     } else {
       const filtered = cocktails.filter(cocktail =>
-        selectedAlcohols.every(selectedAlcohol =>
+        selectedAlcohols.some(selectedAlcohol =>
           cocktail.ingredients.some(ingredient =>
             ingredient.alcool && ingredient.alcool.toLowerCase().includes(selectedAlcohol.toLowerCase())
           )
@@ -59,7 +59,7 @@ function CocktailsApp() {
           <h3>Ingrédients :</h3>
           <ul>
             {cocktail.ingredients.map((ingredient, index) => (
-              <li key={index}>{`${ingredient.alcool ? ingredient.alcool : ingredient.nom} - ${ingredient.dose}`}</li>
+              <Ingredient key={index} name={ingredient.nom} dose={ingredient.dose} alcohol={ingredient.alcool} />
             ))}
           </ul>
         </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import './css/AlcoolButton.css'; // Importer le fichier CSS pour les styles des boutons
+import '../css/AlcoolButton.css'; // Importer le fichier CSS pour les styles des boutons
 
 function AlcoholButton({ alcohol, onClick, selected }) {
   return (

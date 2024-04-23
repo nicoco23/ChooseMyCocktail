@@ -1,25 +1,41 @@
-import React from 'react';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import CocktailsApp from './CocktailsApp';
-
-function ScrollToTop() {
-  window.scrollTo(0, 0);
-  return null;
-}
+import AllCocktailsPage from './AllCocktailPage';
 
 function App() {
+  const [cocktails, setCocktails] = useState([]);
+
+  useEffect(() => {
+    // Charger les cocktails à partir du fichier JSON
+    const data = require('./Cocktails.json');
+    setCocktails(data);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Cocktails App</h1>
-      </header>
-      <main>
-        <CocktailsApp />
-      </main>
-      <footer>
-        <p>Créé par [Vayko]</p>
-      </footer>
-    </div>
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Accueil</Link>
+            </li>
+            <li>
+              <Link to="/all-cocktails">Tous les Cocktails</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <Switch>
+          <Route path="/all-cocktails">
+            <AllCocktailsPage cocktails={cocktails} />
+          </Route>
+          <Route path="/">
+            <CocktailsApp />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
