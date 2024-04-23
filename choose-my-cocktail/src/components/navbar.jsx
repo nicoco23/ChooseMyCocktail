@@ -1,15 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../css/Navbar.css'; // Assurez-vous de créer ce fichier CSS dans le même dossier
 
 function Navbar() {
   return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Accueil</Link>
+    <nav className="navbar">
+      <ul className="navbar-nav">
+        <li className="nav-item">
+          <Link className="nav-link" to="/">Accueil</Link>
         </li>
-        <li>
-          <Link to="/all-cocktails">Tous les Cocktails</Link>
+        <li className="nav-item">
+          <Link className="nav-link" to="/all-cocktails">Tous les Cocktails</Link>
         </li>
       </ul>
     </nav>
