@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MultiSelectCheckbox from '../components/AlcoolSelectListe';
 import Ingredient from '../components/Ingredients';
+import '../css/CocktailApp.css';
 
 function CocktailsApp() {
   const [cocktails, setCocktails] = useState([]);
@@ -8,15 +9,20 @@ function CocktailsApp() {
   const [filteredCocktails, setFilteredCocktails] = useState([]);
 
   useEffect(() => {
-    // Charger les cocktails à partir du fichier JSON
-    const data = require('../JSON/Cocktails.json');
-    setCocktails(data);
+    fetch('../JSON/Cocktails.json')
+      .then(response => response.json())
+      .then(data => {
+        setCocktails(data);
+        setFilteredCocktails(data);
+      })
+      .catch(error => {
+        console.error('Error fetching cocktails:', error);
+      });
   }, []);
 
   useEffect(() => {
-    // Filtrer les cocktails en fonction des alcools sélectionnés
     if (selectedAlcohols.length === 0) {
-      setFilteredCocktails(cocktails); // Si aucun alcool n'est sélectionné, afficher tous les cocktails
+      setFilteredCocktails(cocktails);
     } else {
       const filtered = cocktails.filter(cocktail =>
         selectedAlcohols.some(selectedAlcohol =>
@@ -38,9 +44,16 @@ function CocktailsApp() {
       <h1>Liste des Cocktails</h1>
       <div>
         <h2>Filtrer par alcool :</h2>
-        <MultiSelectCheckbox options={cocktails.flatMap(cocktail => cocktail.ingredients.filter(ingredient => ingredient.alcool).map(ingredient => ingredient.alcool.toLowerCase())).filter((value, index, self) => self.indexOf(value) === index)} selectedOptions={selectedAlcohols} onChange={setSelectedAlcohols} />        <button onClick={resetSelection}>Reset</button>
+        <MultiSelectCheckbox
+          options={cocktails
+            .flatMap(cocktail => cocktail.ingredients.filter(ingredient => ingredient.alcool)
+            .map(ingredient => ingredient.alcool.toLowerCase()))
+            .filter((value, index, self) => self.indexOf(value) === index)}
+          selectedOptions={selectedAlcohols}
+          onChange={setSelectedAlcohols}
+        />
+        <button onClick={resetSelection}>Reset</button>
       </div>
-      {/* Afficher les cocktails filtrés */}
       {filteredCocktails.map(cocktail => (
         <div key={cocktail.nom}>
           <h2>{cocktail.nom}</h2>
@@ -48,7 +61,12 @@ function CocktailsApp() {
           <h3>Ingrédients :</h3>
           <ul>
             {cocktail.ingredients.map((ingredient, index) => (
-              <Ingredient key={index} name={ingredient.nom} dose={ingredient.dose} alcohol={ingredient.alcool} />
+              <Ingredient
+                key={index}
+                name={ingredient.nom}
+                dose={ingredient.dose}
+                alcohol={ingredient.alcool} // Utilisation de l'attribut "alcool"
+              />
             ))}
           </ul>
         </div>

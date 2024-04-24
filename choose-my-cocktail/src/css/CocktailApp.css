@@ -1,0 +1,61 @@
+div {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+div h2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+div p {
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+div h3 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+div ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+div ul li {
+  margin-bottom: 10px;
+}
+div input[type="text"] {
+  width: 50%; /* Rend la barre de recherche plus grande */
+  display: block; /* Nécessaire pour centrer la barre de recherche */
+  margin: 0 auto; /* Centre la barre de recherche */
+  padding: 10px; /* Ajoute un peu d'espace à l'intérieur de la barre de recherche */
+  font-size: 16px; /* Rend le texte dans la barre de recherche un peu plus grand */
+}
+.search-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-container button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ddd;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.search-container button:hover {
+  background-color: #ccc;
+}
