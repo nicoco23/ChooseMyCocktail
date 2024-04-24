@@ -2,6 +2,7 @@ import React from 'react';
 import Ingredient from '../components/Ingredients';
 
 function AllCocktailsPage({ cocktails }) {
+  console.log(cocktails);
   return (
     <div style={{ padding: '20px' }}>
       <h1 style={{ color: '#007bff', fontSize: '2.5em', textAlign: 'center' }}>Tous les Cocktails</h1>
