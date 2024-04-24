@@ -1,27 +1,30 @@
 .navbar {
-    display: flex;
-    justify-content: space-around;
-    background-color: #eee9d2;
-    padding: 10px 0;
-    transition: top 0.3s;
-    position: fixed;
-  }
-  
-  .navbar-nav {
-    display: flex;
-    list-style: none;
-    padding-left: 0;
-  }
-  
-  .nav-item {
-    margin-right: 15px;
-  }
-  
-  .nav-link {
-    text-decoration: none;
-    color: #4e2343;
-  }
-  
-  .nav-link:hover {
-    color: #dd52c6;
-  }
+  display: flex;
+  justify-content: space-around;
+  background-color: #eee9d2;
+  padding: 10px 0;
+  position: fixed; /* Fixe la navbar en haut de la page */
+  width: 100%; /* Assure que la navbar s'étend sur toute la largeur de la page */
+  top: 0; /* Positionne la navbar en haut de la page */
+  transition: top 0.3s; /* Ajoute une transition à la propriété top */
+  z-index: 100; /* Assure que la navbar est toujours au-dessus des autres éléments */
+}
+
+.navbar-nav {
+  display: flex;
+  list-style: none;
+  padding-left: 0;
+}
+
+.nav-item {
+  margin-right: 15px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #4e2343;
+}
+
+.nav-link:hover {
+  color: #dd52c6;
+}
