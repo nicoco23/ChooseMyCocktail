@@ -1,100 +1,48 @@
-/* CocktailApp.css */
+body {
+  background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+}
 
-/* Style pour le titre */
-h1 {
-  text-align: center;
-  margin-top: 20px;
+.cocktail-card {
+  background-color: #fff;
+  margin-bottom: 30px;
+  border-radius: 5px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cocktail-card h2 {
+  margin-top: 0;
   font-size: 28px;
   color: #333;
 }
 
-/* Style pour le conteneur principal */
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* Style pour le conteneur des filtres */
-.filter-container {
-  margin-bottom: 20px;
-}
-
-/* Style pour le titre des filtres */
-.filter-title {
-  margin-bottom: 10px;
-  font-size: 20px;
-}
-
-/* Style pour le bouton de réinitialisation */
-.reset-button {
-  display: block;
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.reset-button:hover {
-  background-color: #0056b3;
-}
-
-/* Style pour chaque cocktail */
-.cocktail {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 20px;
-  transition: box-shadow 0.3s ease;
-}
-
-.cocktail:hover {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.cocktail h2 {
-  margin-top: 0;
-  font-size: 24px;
-  color: #333;
-}
-
-.cocktail p {
-  margin-bottom: 10px;
-  font-size: 16px;
+.cocktail-card p {
+  margin-bottom: 15px;
+  font-size: 18px;
   color: #666;
 }
 
-/* Style pour la liste d'ingrédients */
 .ingredients-list {
-  padding-left: 20px;
+  padding-left: 30px;
 }
 
-/* Style pour chaque ingrédient */
 .ingredient {
-  margin-bottom: 5px;
-  font-size: 14px;
+  margin-bottom: 10px;
+  font-size: 16px;
   color: #888;
 }
 
-/* Media query pour les petits écrans */
 @media screen and (max-width: 600px) {
-  /* Réduire la largeur du conteneur principal */
   .container {
     max-width: 100%;
-    padding: 10px;
+    padding: 20px;
   }
 }
 
-/* Media query pour les écrans moyens */
 @media screen and (min-width: 601px) and (max-width: 900px) {
-  /* Ajuster la largeur du conteneur principal */
   .container {
-    max-width: 80%;
+    max-width: 85%;
+    padding: 30px;
   }
 }
