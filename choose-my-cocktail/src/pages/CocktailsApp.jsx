@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MultiSelectCheckbox from '../components/AlcoolSelectListe';
 import Ingredient from '../components/Ingredients';
-import '../css/CocktailsApp.css';
+import '../css/CocktailApp.css';
 import cocktailsData from '../JSON/Cocktails.json';
 
 function CocktailsApp() {
