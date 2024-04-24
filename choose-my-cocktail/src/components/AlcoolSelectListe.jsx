@@ -27,7 +27,7 @@ function MultiSelectCheckbox({ options, selectedOptions, onChange }) {
 
   return (
     <div>
-      <input type="text" value={filter} onChange={handleInputChange} placeholder="Search..." />
+      <input type="text" value={filter} onChange={handleInputChange} placeholder="Séléctionnez un ou plusieurs alcools..." />
       <div>
         {filteredOptions.map((option, index) => (
           <div key={index}>
