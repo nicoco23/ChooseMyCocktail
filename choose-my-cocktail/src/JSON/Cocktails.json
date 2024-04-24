@@ -28,7 +28,7 @@
         }
       ],
       "description": "Le Mojito est un cocktail à base de rhum, de citron vert, de menthe fraîche, de sucre de canne et d'eau gazeuse. Il est très rafraîchissant et populaire dans le monde entier.",
-      "image": "./margarita.jpeg"
+      "image": "../img/margarita.jpeg"
     },
 
     {
