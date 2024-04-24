@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import AlcoholButton from '../components/AlcoolButton';
+import MultiSelectCheckbox from '../components/AlcoolSelectListe';
 import Ingredient from '../components/Ingredients';
-
-
 
 function CocktailsApp() {
   const [cocktails, setCocktails] = useState([]);
@@ -31,12 +29,8 @@ function CocktailsApp() {
     }
   }, [selectedAlcohols, cocktails]);
 
-  const handleAlcoholClick = alcohol => {
-    if (selectedAlcohols.includes(alcohol)) {
-      setSelectedAlcohols(selectedAlcohols.filter(selected => selected !== alcohol));
-    } else {
-      setSelectedAlcohols([...selectedAlcohols, alcohol]);
-    }
+  const resetSelection = () => {
+    setSelectedAlcohols([]);
   };
 
   return (
@@ -44,14 +38,7 @@ function CocktailsApp() {
       <h1>Liste des Cocktails</h1>
       <div>
         <h2>Filtrer par alcool :</h2>
-        <div>
-          {/* Créer un bouton pour chaque type d'alcool */}
-          {cocktails.flatMap(cocktail => cocktail.ingredients.filter(ingredient => ingredient.alcool).map(ingredient => ingredient.alcool.toLowerCase())).filter((value, index, self) => self.indexOf(value) === index).map((alcohol, index) => (
-            <AlcoholButton key={index} alcohol={alcohol} onClick={handleAlcoholClick} selected={selectedAlcohols.includes(alcohol)} />
-          ))}
-          {/* Bouton pour afficher tous les alcools */}
-          <button onClick={() => setSelectedAlcohols([])}>Tous les alcools</button>
-        </div>
+        <MultiSelectCheckbox options={cocktails.flatMap(cocktail => cocktail.ingredients.filter(ingredient => ingredient.alcool).map(ingredient => ingredient.alcool.toLowerCase())).filter((value, index, self) => self.indexOf(value) === index)} selectedOptions={selectedAlcohols} onChange={setSelectedAlcohols} />        <button onClick={resetSelection}>Reset</button>
       </div>
       {/* Afficher les cocktails filtrés */}
       {filteredCocktails.map(cocktail => (
