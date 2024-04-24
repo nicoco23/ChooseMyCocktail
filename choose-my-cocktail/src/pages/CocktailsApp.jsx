@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import AlcoholButton from '../components/AlcoolButton';
 import Ingredient from '../components/Ingredients';
 
+
+
 function CocktailsApp() {
   const [cocktails, setCocktails] = useState([]);
   const [selectedAlcohols, setSelectedAlcohols] = useState([]);

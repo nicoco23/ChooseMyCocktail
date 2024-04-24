@@ -12,6 +12,9 @@ function Navbar() {
         <li className="nav-item">
           <Link className="nav-link" to="/all-cocktails">Tous les Cocktails</Link>
         </li>
+        <li className="nav-item">
+          <Link className="nav-link" to="/cocktails">Cocktails</Link>
+        </li>
       </ul>
     </nav>
   );
