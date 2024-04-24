@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MultiSelectCheckbox from '../components/AlcoolSelectListe';
 import Ingredient from '../components/Ingredients';
 import '../css/CocktailApp.css';
+import cocktailsData from '../JSON/Cocktails.json';
 
 function CocktailsApp() {
   const [cocktails, setCocktails] = useState([]);
@@ -9,15 +10,8 @@ function CocktailsApp() {
   const [filteredCocktails, setFilteredCocktails] = useState([]);
 
   useEffect(() => {
-    fetch('../JSON/Cocktails.json')
-      .then(response => response.json())
-      .then(data => {
-        setCocktails(data);
-        setFilteredCocktails(data);
-      })
-      .catch(error => {
-        console.error('Error fetching cocktails:', error);
-      });
+    setCocktails(cocktailsData);
+    setFilteredCocktails(cocktailsData);
   }, []);
 
   useEffect(() => {
