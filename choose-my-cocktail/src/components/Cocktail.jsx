@@ -2,6 +2,7 @@ import React from 'react';
 import Ingredient from './Ingredients'; // Assurez-vous d'avoir le bon chemin d'importation
 
 function Cocktail({ cocktail }) {
+  
   return (
     <div style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '10px', padding: '10px' }}>
       <h2 style={{ color: '#333', fontSize: '2em' }}>{cocktail.nom}</h2>

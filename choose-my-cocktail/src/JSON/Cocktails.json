@@ -93,6 +93,29 @@
       ],
       "description": "La Margarita est un cocktail à base de tequila, de triple sec et de jus de citron vert. Il est servi dans un verre à cocktail avec du sel sur le bord. C'est un cocktail classique et rafraîchissant.",
       "image": "./margarita.jpeg"
+    },
+    {
+      "nom": "Forestier",
+      "ingredients": [
+        {
+          "alcool": "Jagermeister",
+          "dose": "5 cl"
+        },
+        {
+          "alcool": "Amaretto",
+          "dose": "5 cl"
+        },
+        {
+          "nom": "limonade",
+          "dose": "Quantité suffisante"
+        },
+        {
+          "nom": "jus de citron",
+          "dose": "3 cl"
+        }
+      ],
+      "description": "Le forestier est une cre&tion, son gout fruité et légèrement sucré saura vous combler.",
+      "image": "./forestier.jpeg"
     }
   ]
   
