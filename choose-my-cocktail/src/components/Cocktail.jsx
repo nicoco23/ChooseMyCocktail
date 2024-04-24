@@ -6,7 +6,7 @@ function Cocktail({ cocktail }) {
   return (
     <div style={{ marginBottom: '20px', border: '1px solid #ccc', borderRadius: '10px', padding: '10px' }}>
       <h2 style={{ color: '#333', fontSize: '2em' }}>{cocktail.nom}</h2>
-      <img src={cocktail.image} alt={cocktail.nom} style={{ maxWidth: '100%', height: 'auto' }} />
+      <img src={cocktail.image} alt={cocktail.nom} />
       <p style={{ fontSize: '1.2em', lineHeight: '1.6' }}>{cocktail.description}</p>
       <h3 style={{ color: '#007bff', fontSize: '1.5em' }}>Ingrédients :</h3>
       <ul>
