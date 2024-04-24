@@ -4,6 +4,7 @@
     background-color: #eee9d2;
     padding: 10px 0;
     transition: top 0.3s;
+    position: fixed;
   }
   
   .navbar-nav {
