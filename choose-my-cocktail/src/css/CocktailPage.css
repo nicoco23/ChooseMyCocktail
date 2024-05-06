@@ -17,7 +17,7 @@
 }
 
 .cocktail-card {
-  border: 1px solid #dee2e6;
+  background-color: #0b002b;
   border-radius: 5px;
   overflow: hidden;
   display: flex;

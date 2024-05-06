@@ -27,11 +27,11 @@ function MultiSelectCheckbox({ options, selectedOptions, onChange }) {
 
   return (
     <div>
-      <input type="text" value={filter} onChange={handleInputChange} placeholder="Séléctionnez un ou plusieurs alcools..." />
+      <input type="text" value={filter} style={{width: '300px'}} onChange={handleInputChange} placeholder="Séléctionnez un ou plusieurs alcools..." />
       <div>
         {filteredOptions.map((option, index) => (
           <div key={index}>
-            <input type="checkbox" id={option} name={option} checked={selectedOptions.includes(option)} onChange={handleCheckboxChange} />
+            <input type="checkbox" style={{width: '25px'}} name={option} checked={selectedOptions.includes(option)} onChange={handleCheckboxChange} />
             <label htmlFor={option}>{option}</label>
           </div>
         ))}

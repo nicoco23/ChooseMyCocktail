@@ -1,10 +1,14 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 body {
-  background-color: #f4f4f4;
+  background-color: rgb(5, 0, 20);;
   color: #333;
 }
 
 h1, h2, h3 {
-  color: #333;
+  color: #ffffff;
 }
 
 h1 {
@@ -22,31 +26,33 @@ h3 {
 }
 
 button {
-  background-color: #333;
+  background-color: #0d0130;
   color: #fff;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   margin: 10px 0;
+  transition: 200ms ease-in-out;
 }
 
 button:hover {
-  background-color: #666;
+  background-color: #1c016a;
 }
 
 .cocktail-card {
-  background-color: #fff;
+  background-color: #0b002b;
   margin-bottom: 30px;
   border-radius: 5px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px; /* Ajustez cette valeur en fonction de vos préférences */
 }
 
 .cocktail-card p {
   margin-bottom: 15px;
   font-size: 18px;
-  color: #666;
+  color: #ffffff;
 }
 
 .ingredients-list {
@@ -57,6 +63,24 @@ button:hover {
   margin-bottom: 10px;
   font-size: 16px;
   color: #888;
+}
+
+.cocktail-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #333;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 10px;
 }
 
 @media screen and (max-width: 600px) {

@@ -4,6 +4,8 @@ import HomePage from './pages/HomePage';
 import AllCocktailsPage from './pages/AllCocktailPage';
 import CocktailTest from './pages/CocktailsApp';
 import Navbar from './components/navbar';
+import MyCocktails from './pages/MyCocktails'; // Importez le composant ici
+
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
             <Route path="/" element={<HomePage />} /> {/* Utilisation correcte de Routes et Route */}
             <Route path="/all-cocktails" element={<AllCocktailsPage />} />
             <Route path="/cocktails" element={<CocktailTest />} />
+              <Route path="/my-cocktails" element={<MyCocktails/>} />
           </Routes>
         </div>
       </Router>

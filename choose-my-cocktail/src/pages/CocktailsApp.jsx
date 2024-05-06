@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import MultiSelectCheckbox from '../components/AlcoolSelectListe';
-import Ingredient from '../components/Ingredients';
+import FilterSection from '../components/FilterSection';
 import '../css/CocktailApp.css';
 import cocktailsData from '../JSON/Cocktails.json';
+import CocktailList from '../components/CocktailList';
+
 
 function CocktailsApp() {
   const [cocktails, setCocktails] = useState([]);
@@ -34,38 +35,19 @@ function CocktailsApp() {
   };
 
   return (
-    <div>
-      <h1>Liste des Cocktails</h1>
       <div>
-        <h2>Filtrer par alcool :</h2>
-        <MultiSelectCheckbox
-          options={cocktails
-            .flatMap(cocktail => cocktail.ingredients.filter(ingredient => ingredient.alcool)
-            .map(ingredient => ingredient.alcool.toLowerCase()))
-            .filter((value, index, self) => self.indexOf(value) === index)}
-          selectedOptions={selectedAlcohols}
-          onChange={setSelectedAlcohols}
+        <h1>Liste des Cocktails</h1>
+        <FilterSection
+            options={cocktails
+                .flatMap(cocktail => cocktail.ingredients.filter(ingredient => ingredient.alcool)
+                    .map(ingredient => ingredient.alcool.toLowerCase()))
+                .filter((value, index, self) => self.indexOf(value) === index)}
+            selectedOptions={selectedAlcohols}
+            onChange={setSelectedAlcohols}
+            resetSelection={resetSelection}
         />
-        <button onClick={resetSelection}>Reset</button>
+        <CocktailList cocktails={filteredCocktails} />
       </div>
-      {filteredCocktails.map(cocktail => (
-        <div key={cocktail.nom}>
-          <h2>{cocktail.nom}</h2>
-          <p>{cocktail.description}</p>
-          <h3>Ingrédients :</h3>
-          <ul>
-            {cocktail.ingredients.map((ingredient, index) => (
-              <Ingredient
-                key={index}
-                name={ingredient.nom}
-                dose={ingredient.dose}
-                alcohol={ingredient.alcool} // Utilisation de l'attribut "alcool"
-              />
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
   );
 }
 
