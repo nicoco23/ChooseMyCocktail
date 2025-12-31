@@ -1,6 +1,22 @@
 const API_URL = 'http://localhost:3001/api/recipes';
 
 export const cocktailService = {
+  getAllRecipes: async (isAdmin = false) => {
+    try {
+      const url = isAdmin ? `${API_URL}?admin=true` : API_URL;
+      const response = await fetch(url);
+      const json = await response.json();
+      const dbRecipes = json.data || [];
+
+      return dbRecipes
+        .filter(r => ['cocktail', 'mocktail', 'smoothie'].includes(r.category))
+        .map(r => ({ ...r, etapes: r.steps || r.etapes }));
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      return [];
+    }
+  },
+
   /**
    * Récupère tous les cocktails (API + LocalStorage)
    * Fusionne Cocktails, Mocktails, Smoothies et Custom

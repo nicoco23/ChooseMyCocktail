@@ -39,6 +39,34 @@ db.serialize(() => {
       });
     }
   });
+
+  // Create relational tables
+  db.run(`CREATE TABLE IF NOT EXISTS ingredients (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)`);
+  db.run(`CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)`);
+  db.run(`CREATE TABLE IF NOT EXISTS equipment (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS recipe_ingredients (
+    recipe_id INTEGER,
+    ingredient_id INTEGER,
+    quantity TEXT,
+    unit TEXT,
+    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    FOREIGN KEY(ingredient_id) REFERENCES ingredients(id)
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS recipe_tags (
+    recipe_id INTEGER,
+    tag_id INTEGER,
+    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    FOREIGN KEY(tag_id) REFERENCES tags(id)
+  )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS recipe_equipment (
+    recipe_id INTEGER,
+    equipment_id INTEGER,
+    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    FOREIGN KEY(equipment_id) REFERENCES equipment(id)
+  )`);
 });
 
 module.exports = db;

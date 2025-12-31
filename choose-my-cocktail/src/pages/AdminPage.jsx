@@ -55,12 +55,10 @@ function AdminPage({ mode = 'cocktail' }) {
   };
 
   const loadRecipes = useCallback(async () => {
-    if (isFoodMode) {
-        // Pass true to fetch ALL recipes (including non-validated)
-        const recipes = await service.getAllRecipes(true);
-        setAllRecipes(recipes);
-    }
-  }, [isFoodMode, service]);
+    // Pass true to fetch ALL recipes (including non-validated)
+    const recipes = await service.getAllRecipes(true);
+    setAllRecipes(recipes);
+  }, [service]);
 
   useEffect(() => {
     if (isAuthenticated) {
