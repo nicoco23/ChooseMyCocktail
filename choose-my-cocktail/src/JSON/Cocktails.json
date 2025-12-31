@@ -1,6 +1,7 @@
 [
     {
       "nom": "Mojito",
+      "duree": "5 min",
       "ingredients": [
         {
           "alcool": "Rhum blanc",
@@ -23,8 +24,8 @@
           "dose": "Quantité suffisante"
         },
         {
-          "nom": "Glaçons",
-          "dose": "Quantité suffisante"
+          "nom": "Glace",
+          "dose": "A ras bord"
         }
       ],
       "description": "Le Mojito est un cocktail à base de rhum, de citron vert, de menthe fraîche, de sucre de canne et d'eau gazeuse. Il est très rafraîchissant et populaire dans le monde entier.",
@@ -116,6 +117,28 @@
       ],
       "description": "Le forestier est une cre&tion, son gout fruité et légèrement sucré saura vous combler.",
       "image": "./forestier.jpeg"
+    },
+    {
+      "nom": "Chachouesque",
+      "ingredients": [
+        {
+          "alcool": "Du love",
+          "dose": "5 cl"
+        },
+        {
+          "alcool": "Des chachoux",
+          "dose": "5 cl"
+        },
+        {
+          "nom": "limonade",
+          "dose": "Quantité suffisante"
+        },
+        {
+          "nom": "jus de citron",
+          "dose": "3 cl"
+        }
+      ],
+      "description": "LEs chachoux sont le couple le plus minion sur terre.",
+      "image": "./forestier.jpeg"
     }
   ]
-  

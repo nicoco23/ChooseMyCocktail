@@ -1,0 +1,17 @@
+[
+  {
+    "nom": "Pâtes Carbonara",
+    "category": "plat",
+    "ingredients": [
+      { "nom": "Pâtes", "dose": "200g" },
+      { "nom": "Lardons", "dose": "100g" },
+      { "nom": "Oeufs", "dose": "2" },
+      { "nom": "Parmesan", "dose": "50g" },
+      { "nom": "Poivre", "dose": "QS" }
+    ],
+    "recette": "Cuire les pâtes. Faire revenir les lardons. Mélanger oeufs et parmesan. Tout mélanger hors du feu.",
+    "duree": "20 min",
+    "image": "",
+    "equipment": ["casserole", "poele"]
+  }
+]

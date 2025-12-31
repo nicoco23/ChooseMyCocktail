@@ -1,27 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import Cocktail from '../components/Cocktail';
-import '../css/CocktailPage.css'; // Importez le fichier CSS que nous venons de créer
+import CocktailModal from '../components/CocktailModal';
+import { cocktailService } from '../services/cocktailService';
 
 function AllCocktailsPage() {
   const [cocktails, setCocktails] = useState([]);
+  const [selectedCocktail, setSelectedCocktail] = useState(null);
 
   useEffect(() => {
-    // Charger les cocktails à partir du fichier JSON
-    const data = require('../JSON/Cocktails.json');
+    // Utiliser le service pour récupérer les cocktails
+    const data = cocktailService.getAllCocktails();
     setCocktails(data);
   }, []);
 
   return (
-    <div className="cocktails-page">
-      <h1 className="title">Liste des Cocktails</h1>
-      <div className="cocktails-list">
-        {cocktails.map(cocktail => (
-          <Cocktail key={cocktail.nom} cocktail={cocktail} />
-        ))}
+    <div className="min-h-screen bg-slate-900 text-slate-100 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-white sm:text-5xl">
+            Tous nos Cocktails
+          </h1>
+          <p className="mt-4 text-xl text-slate-400">
+            Explorez notre collection complète de recettes.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {cocktails.map((cocktail, index) => (
+            <Cocktail key={index} cocktail={cocktail} onSelect={setSelectedCocktail} />
+          ))}
+        </div>
+
+        {selectedCocktail && (
+          <CocktailModal cocktail={selectedCocktail} onClose={() => setSelectedCocktail(null)} />
+        )}
       </div>
     </div>
   );
 }
 
 export default AllCocktailsPage;
-

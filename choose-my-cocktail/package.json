@@ -17,6 +17,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "dev": "concurrently \"npm start\" \"cd server && npm start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -40,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "tailwindcss": "^3.4.3"
   }
 }

@@ -1,0 +1,17 @@
+[
+  {
+    "nom": "Salade César",
+    "category": "entrée",
+    "ingredients": [
+      { "nom": "Salade Romaine", "dose": "1" },
+      { "nom": "Poulet", "dose": "150g" },
+      { "nom": "Parmesan", "dose": "30g" },
+      { "nom": "Croutons", "dose": "QS" },
+      { "nom": "Sauce César", "dose": "QS" }
+    ],
+    "recette": "Laver la salade. Cuire le poulet. Mélanger le tout avec la sauce.",
+    "duree": "15 min",
+    "image": "",
+    "equipment": ["poele"]
+  }
+]

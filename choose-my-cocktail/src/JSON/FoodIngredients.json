@@ -1,0 +1,16 @@
+[
+  { "nom": "Pâtes", "type": "féculent" },
+  { "nom": "Lardons", "type": "viande" },
+  { "nom": "Oeufs", "type": "protéine" },
+  { "nom": "Parmesan", "type": "fromage" },
+  { "nom": "Poivre", "type": "épice" },
+  { "nom": "Salade Romaine", "type": "légume" },
+  { "nom": "Poulet", "type": "viande" },
+  { "nom": "Croutons", "type": "épicerie" },
+  { "nom": "Sauce César", "type": "sauce" },
+  { "nom": "Tomates", "type": "légume" },
+  { "nom": "Oignons", "type": "légume" },
+  { "nom": "Ail", "type": "légume" },
+  { "nom": "Huile d'olive", "type": "épicerie" },
+  { "nom": "Sel", "type": "épice" }
+]

@@ -1,0 +1,61 @@
+[
+{
+  "nom": "Fondant au chocolat",
+  "category": "dessert",
+  "preparation": "15",
+  "cuisson": "25",
+  "total": "40 min",
+  "etapes": [
+    {
+      "titre": "Préparation du beurre",
+      "description": "Commencez par sortir le beurre du réfrigérateur afin qu'il ramollisse. Si vous avez oublié, il suffit de le passer au micro-ondes pendant une dizaine de secondes, il vous sera plus facile de le travailler par la suite. "
+    },
+    {
+      "titre": "Préparation du chocolat",
+      "description": "Dans une casserole, cassez le chocolat en morceaux auxquels vous ajoutez 3 cuillères à soupe d'eau et mettez le tout à fondre à feu moyen au bain-marie (dans une casserole plus grande remplie d'eau). "
+    },
+    {
+      "titre": "Mélange des ingriédents",
+      "description": "Pendant ce temps, dans un saladier, vous travaillez, à l'aide d'une cuillère en bois, le beurre mou en pommade, auquel vous ajoutez le sucre en poudre. Continuez de remuer jusqu'à ce que le mélange devienne léger et onctueux. Vous pouvez aussi vous aider d'un batteur électrique, plus efficace pour obtenir la consistance désirée. "
+    },
+    {
+      "titre": "Ajout des Oeufs",
+      "description": "Ajoutez les œufs un à un en alternant avec la farine. Conseil : il faut remuer et bien travailler la pâte entre chaque œuf et chaque apport de farine, jusqu'à incorporation complète de ces éléments dans la pâte. Pour rendre la pâte plus homogène, vous pouvez également donner un petit coup de batteur électrique. "
+    },
+    {
+      "titre": "Ajout du chocolat",
+      "description": "Ensuite, incorporez à ce mélange le chocolat fondu en remuant bien avec une cuillère. "
+    },
+    {
+      "titre": "Cuisson du fondant",
+      "description": "Beurrez votre moule, versez-y la pâte et faites cuire au four, préchauffé à 150°c, pendant 25 à 30 minutes. "
+    }
+  ],
+  "ingredients": [
+    {
+      "nom": "Chocolat noir",
+      "dose": "200 g"
+    },
+    {
+      "nom": "Beurre",
+      "dose": "200 g"
+    },
+    {
+      "nom": "Sucre",
+      "dose": "150 g"
+    },
+    {
+      "nom": "Farine",
+      "dose": "80 g"
+    },
+    {
+      "nom": "Oeuf",
+      "dose": "4 g"
+    }
+  ],
+  "image": "",
+  "equipment": [
+    "Four",
+    "Micro-ondes"
+  ]
+}]
