@@ -28,6 +28,7 @@ function AdminPage({ mode = 'cocktail' }) {
     ingredients: [{ nom: '', amount: '', unit: 'g' }],
     image: '',
     equipment: [],
+    tags: [],
     validated: true // Admins create validated recipes by default
   });
 
@@ -41,6 +42,7 @@ function AdminPage({ mode = 'cocktail' }) {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'form'
 
   const availableEquipment = ['Four', 'Plaques', 'Poêle', 'Casserole', 'Micro-ondes', 'Air Fryer', 'Robot Cuiseur', 'Barbecue', 'Friteuse', 'Mixeur'];
+  const availableTags = ['Viande', 'Poisson', 'Végétarien', 'Vegan', 'Sans Gluten', 'Soupe', 'Salade', 'Pâtes', 'Riz', 'Fruits de mer', 'Chocolat', 'Fruits', 'Fromage', 'Épicé', 'Rapide', 'Traditionnel', 'Sain', 'Gourmand'];
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -113,6 +115,7 @@ function AdminPage({ mode = 'cocktail' }) {
       ingredients: [{ nom: '', amount: '', unit: 'g' }],
       image: '',
       equipment: [],
+      tags: [],
       validated: true
     });
     setViewMode('list');
@@ -139,6 +142,7 @@ function AdminPage({ mode = 'cocktail' }) {
         })),
         image: recipeToEdit.image || '',
         equipment: recipeToEdit.equipment || [],
+        tags: recipeToEdit.tags || [],
         validated: recipeToEdit.validated // Keep existing validation status
     });
     setViewMode('form');
@@ -246,6 +250,15 @@ function AdminPage({ mode = 'cocktail' }) {
       setRecipe({ ...recipe, equipment: current.filter(e => e !== eq) });
     } else {
       setRecipe({ ...recipe, equipment: [...current, eq] });
+    }
+  };
+
+  const toggleTag = (tag) => {
+    const current = recipe.tags || [];
+    if (current.includes(tag)) {
+      setRecipe({ ...recipe, tags: current.filter(t => t !== tag) });
+    } else {
+      setRecipe({ ...recipe, tags: [...current, tag] });
     }
   };
 
@@ -540,6 +553,46 @@ function AdminPage({ mode = 'cocktail' }) {
                 </div>
             ))}
             <button onClick={addStep} className="text-sm text-indigo-500">+ Étape</button>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Équipement</label>
+            <div className="flex flex-wrap gap-2">
+              {availableEquipment.map(eq => (
+                <button
+                  key={eq}
+                  type="button"
+                  onClick={() => toggleEquipment(eq)}
+                  className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+                    recipe.equipment.includes(eq)
+                      ? (theme === 'kitty' ? 'bg-hk-red-light text-white border-hk-red-light' : 'bg-food-orange text-white border-food-orange')
+                      : (theme === 'kitty' ? 'bg-white text-hk-red-dark border-hk-pink-light/50 hover:bg-hk-pink-pale' : 'bg-white text-food-dark border-food-purple/20 hover:bg-food-yellow/10')
+                  }`}
+                >
+                  {eq}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Tags</label>
+            <div className="flex flex-wrap gap-2">
+              {availableTags.map(tag => (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={() => toggleTag(tag)}
+                  className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+                    recipe.tags.includes(tag)
+                      ? (theme === 'kitty' ? 'bg-hk-blue-light text-white border-hk-blue-light' : 'bg-food-purple text-white border-food-purple')
+                      : (theme === 'kitty' ? 'bg-white text-hk-blue-dark border-hk-pink-light/50 hover:bg-hk-pink-pale' : 'bg-white text-food-dark border-food-purple/20 hover:bg-food-yellow/10')
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div>

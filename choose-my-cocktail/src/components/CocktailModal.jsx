@@ -21,7 +21,8 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
     const ingredientsText = cocktail.ingredients
       .map(i => `${i.dose ? i.dose + ' ' : ''}${i.nom || i.alcool}`)
       .join('\n');
-    const text = `Ingrédients pour ${cocktail.nom} :\n${ingredientsText}`;
+    const serviceName = isFoodContext ? "ChooseMyFood" : "ChooseMyCocktail";
+    const text = `Ingrédients pour ${cocktail.nom} :\n${ingredientsText}\n\nTrouvé sur ${serviceName} 🍽️🍹`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -37,7 +38,8 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
       .map(i => `${i.dose ? i.dose + ' ' : ''}${i.nom || i.alcool}`)
       .join('\n');
 
-    const text = `Liste de courses pour ${cocktail.nom} :\n${ingredientsText}`;
+    const serviceName = isFoodContext ? "ChooseMyFood" : "ChooseMyCocktail";
+    const text = `Liste de courses pour ${cocktail.nom} :\n${ingredientsText}\n\nTrouvé sur ${serviceName} 🍽️🍹`;
     navigator.clipboard.writeText(text);
     setCopiedMissing(true);
     setTimeout(() => setCopiedMissing(false), 2000);
@@ -157,18 +159,6 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
-
-        {/* Edit Button (only for DB recipes) */}
-        {cocktail.id && (
-          <button
-            onClick={handleEdit}
-            className={getEditButtonClasses()}
-            aria-label="Modifier"
-            title="Modifier la recette"
-          >
-            <PencilSquareIcon className="h-5 w-5" />
-          </button>
-        )}
 
         <div className="p-6 pb-0">
             <h1 className={getTitleClasses()}>{cocktail.nom}</h1>
