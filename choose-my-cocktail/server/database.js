@@ -3,70 +3,69 @@ const path = require('path');
 
 const dbPath = path.resolve(__dirname, 'recipes.db');
 
-const db = new sqlite3.Database(dbPath, (err) => {
-  if (err) {
-    console.error('Error opening database ' + dbPath + ': ' + err.message);
-  } else {
-    console.log('Connected to the SQLite database.');
-  }
-});
-
-db.serialize(() => {
-  db.run(`CREATE TABLE IF NOT EXISTS recipes (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    category TEXT,
-    type TEXT,
-    image TEXT,
-    preparation_time INTEGER,
-    cooking_time INTEGER,
-    total_time INTEGER,
-    ingredients TEXT,
-    steps TEXT,
-    equipment TEXT,
-    glass TEXT,
-    alcool INTEGER,
-    is_custom INTEGER DEFAULT 0,
-    validated INTEGER DEFAULT 0
-  )`, (err) => {
-    if (!err) {
-      // Try to add the column if table already exists (migration)
-      db.run(`ALTER TABLE recipes ADD COLUMN validated INTEGER DEFAULT 0`, (err) => {
-        // Ignore error if column already exists
-      });
-      db.run(`ALTER TABLE recipes ADD COLUMN tags TEXT`, (err) => {
-        // Ignore error if column already exists
-      });
+class Database {
+    constructor() {
+        this.db = new sqlite3.Database(dbPath, (err) => {
+            if (err) {
+                console.error('Error opening database:', err.message);
+            } else {
+                console.log('Connected to SQLite database.');
+                this.initSchema();
+            }
+        });
     }
-  });
 
-  // Create relational tables
-  db.run(`CREATE TABLE IF NOT EXISTS ingredients (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)`);
-  db.run(`CREATE TABLE IF NOT EXISTS tags (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)`);
-  db.run(`CREATE TABLE IF NOT EXISTS equipment (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE)`);
+    initSchema() {
+        const fs = require('fs');
+        const schemaPath = path.resolve(__dirname, 'schema.sql');
 
-  db.run(`CREATE TABLE IF NOT EXISTS recipe_ingredients (
-    recipe_id INTEGER,
-    ingredient_id INTEGER,
-    quantity TEXT,
-    unit TEXT,
-    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-    FOREIGN KEY(ingredient_id) REFERENCES ingredients(id)
-  )`);
+        if (fs.existsSync(schemaPath)) {
+            const schema = fs.readFileSync(schemaPath, 'utf8');
+            this.db.exec(schema, (err) => {
+                if (err) {
+                    console.error('Error executing schema:', err);
+                } else {
+                    console.log('Database schema initialized.');
+                }
+            });
+        }
+    }
 
-  db.run(`CREATE TABLE IF NOT EXISTS recipe_tags (
-    recipe_id INTEGER,
-    tag_id INTEGER,
-    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-    FOREIGN KEY(tag_id) REFERENCES tags(id)
-  )`);
+    run(sql, params = []) {
+        return new Promise((resolve, reject) => {
+            this.db.run(sql, params, function(err) {
+                if (err) reject(err);
+                else resolve(this);
+            });
+        });
+    }
 
-  db.run(`CREATE TABLE IF NOT EXISTS recipe_equipment (
-    recipe_id INTEGER,
-    equipment_id INTEGER,
-    FOREIGN KEY(recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
-    FOREIGN KEY(equipment_id) REFERENCES equipment(id)
-  )`);
-});
+    get(sql, params = []) {
+        return new Promise((resolve, reject) => {
+            this.db.get(sql, params, (err, row) => {
+                if (err) reject(err);
+                else resolve(row);
+            });
+        });
+    }
 
-module.exports = db;
+    all(sql, params = []) {
+        return new Promise((resolve, reject) => {
+            this.db.all(sql, params, (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            });
+        });
+    }
+
+    close() {
+        return new Promise((resolve, reject) => {
+            this.db.close((err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+    }
+}
+
+module.exports = new Database();

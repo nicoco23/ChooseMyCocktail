@@ -5,6 +5,9 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { cocktailService } from '../services/cocktailService';
 import { foodService } from '../services/foodService';
 import { useTheme } from '../context/ThemeContext';
+import { API_UPLOAD_URL } from '../config';
+
+const FRONT_ADMIN_TOKEN = process.env.REACT_APP_ADMIN_TOKEN || 'admin123';
 
 function AdminPage({ mode = 'cocktail' }) {
   const location = useLocation();
@@ -15,6 +18,7 @@ function AdminPage({ mode = 'cocktail' }) {
   // Simple Auth
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
+  const [adminToken, setAdminToken] = useState('');
 
   const units = ['g', 'kg', 'cl', 'ml', 'dl', 'l', 'c.à.c', 'c.à.s', 'pièce', 'Autre'];
 
@@ -46,9 +50,9 @@ function AdminPage({ mode = 'cocktail' }) {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // Hardcoded password for simple protection as requested
-    if (password === 'admin123') {
+    if (password === FRONT_ADMIN_TOKEN) {
       setIsAuthenticated(true);
+      setAdminToken(password);
     } else {
       alert('Mot de passe incorrect');
     }
@@ -56,9 +60,9 @@ function AdminPage({ mode = 'cocktail' }) {
 
   const loadRecipes = useCallback(async () => {
     // Pass true to fetch ALL recipes (including non-validated)
-    const recipes = await service.getAllRecipes(true);
+    const recipes = await service.getAllRecipes(true, adminToken);
     setAllRecipes(recipes);
-  }, [service]);
+  }, [service, adminToken]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -80,8 +84,9 @@ function AdminPage({ mode = 'cocktail' }) {
 
     setUploading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/upload', {
+      const response = await fetch(API_UPLOAD_URL, {
         method: 'POST',
+        headers: adminToken ? { 'x-admin-token': adminToken } : {},
         body: formData,
       });
 
@@ -154,7 +159,7 @@ function AdminPage({ mode = 'cocktail' }) {
             etapes: recipeToValidate.steps || recipeToValidate.etapes,
         };
 
-        await service.updateRecipe(updatedRecipe);
+        await service.updateRecipe(updatedRecipe, adminToken);
         loadRecipes(); // Refresh list
     } catch (error) {
         alert('Erreur lors de la validation : ' + error.message);
@@ -164,7 +169,7 @@ function AdminPage({ mode = 'cocktail' }) {
   const handleDeleteRecipe = async (id) => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette recette ?')) {
       try {
-        await service.deleteRecipe(id);
+        await service.deleteRecipe(id, adminToken);
         setAllRecipes(allRecipes.filter(r => r.id !== id));
       } catch (error) {
         alert('Erreur lors de la suppression : ' + error.message);
@@ -308,10 +313,10 @@ function AdminPage({ mode = 'cocktail' }) {
 
     try {
       if (editingId) {
-        await service.updateRecipe(finalRecipe);
+        await service.updateRecipe(finalRecipe, adminToken);
         alert('Recette mise à jour !');
       } else {
-        await service.addRecipe(finalRecipe);
+        await service.addRecipe(finalRecipe, adminToken);
         alert('Recette créée !');
       }
       loadRecipes();

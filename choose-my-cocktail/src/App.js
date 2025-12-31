@@ -9,6 +9,7 @@ import FoodApp from './pages/FoodApp';
 import CocktailDetailsPage from './pages/CocktailDetailsPage';
 import AdminPage from './pages/AdminPage';
 import SubmitRecipePage from './pages/SubmitRecipePage';
+import PairingPage from './pages/PairingPage';
 import Navbar from './components/navbar';
 import { ThemeProvider } from './context/ThemeContext';
 
@@ -26,6 +27,7 @@ function App() {
             <Route path="/cocktails" element={<CocktailsApp />} />
             <Route path="/food" element={<FoodApp />} />
             <Route path="/cocktail/:name" element={<CocktailDetailsPage />} />
+            <Route path="/pairings" element={<PairingPage />} />
 
             {/* Public Submission Page */}
             <Route path="/submit-recipe" element={<SubmitRecipePage />} />

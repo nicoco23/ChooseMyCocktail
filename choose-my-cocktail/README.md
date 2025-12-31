@@ -1,70 +1,133 @@
-# Getting Started with Create React App
+# 🍹 ChooseMyCocktail v2.0
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> **Unified Food & Beverage Pairing Platform**
 
-## Available Scripts
+Welcome to the modernized version of ChooseMyCocktail! This project has evolved from a simple cocktail recipe app into a comprehensive ecosystem for discovering, pairing, and enjoying both food and beverages.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 📋 Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**ChooseMyCocktail v2.0** introduces a robust, data-driven approach to culinary pairings. Whether you're looking for the perfect cocktail to match your spicy pasta or just want to browse a curated collection of recipes, this platform has you covered.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### ✨ Key Features
 
-### `npm test`
+- **🍷 Intelligent Pairing Engine**: Rule-based algorithm that suggests beverages based on food flavor profiles (e.g., "Spicy" → "Refreshing", "Rich" → "Acidic").
+- **🗄️ Unified Database**: A single, normalized SQLite database managing both Food and Beverage items with shared ingredients and tags.
+- **🔍 Advanced Filtering**: Search by ingredients, type (Cocktail/Mocktail), or dietary preferences.
+- **📱 Modern UI**: A responsive React frontend with a dedicated Pairing interface.
+- **🔐 Admin Tools**: Secure endpoints for managing recipes and ingredients.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## 🚀 Getting Started
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
+- **Node.js** (v16+)
+- **npm** (v8+)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/nicoco23/ChooseMyCocktail.git
+    cd ChooseMyCocktail/choose-my-cocktail
+    ```
 
-### `npm run eject`
+2.  **Install Dependencies**
+    ```bash
+    # Install Frontend dependencies
+    npm install
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+    # Install Backend dependencies
+    cd server
+    npm install
+    cd ..
+    ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Running the Application
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+You need to run both the Backend (API) and Frontend (UI).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+**1. Start the Backend (Port 3001)**
+```bash
+cd server
+node index.js
+```
+*The API will be available at `http://localhost:3001`*
 
-## Learn More
+**2. Start the Frontend (Port 3000)**
+```bash
+# In a new terminal window
+cd choose-my-cocktail
+npm start
+```
+*The App will open at `http://localhost:3000`*
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🏗️ Architecture
 
-### Code Splitting
+The application follows a **Client-Server** architecture:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Frontend**: React.js (SPA) with React Router and Context API.
+- **Backend**: Node.js with Express.
+- **Database**: SQLite (Relational Schema).
+- **Pattern**: Repository Pattern for clean data access.
 
-### Analyzing the Bundle Size
+For a deep dive, see [ARCHITECTURE_OVERVIEW.md](ARCHITECTURE_OVERVIEW.md).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🔌 API Reference
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+The backend provides a RESTful API for accessing recipes, ingredients, and pairings.
 
-### Advanced Configuration
+**Base URL**: `http://localhost:3001`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/health` | Check server status |
+| `GET` | `/api/recipes` | Get all items (supports filters) |
+| `GET` | `/api/recipes/:id` | Get details for a specific item |
+| `POST` | `/api/pairings` | Get beverage recommendations for a food item |
+| `GET` | `/api/ingredients` | Get list of normalized ingredients |
 
-### Deployment
+> **Note**: Admin endpoints (Create/Update/Delete) require the `x-admin-token` header.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+For full documentation, see [API_DOCUMENTATION.md](API_DOCUMENTATION.md).
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🧪 Testing
+
+We provide a comprehensive guide to testing the API and Pairing Engine.
+
+**Quick Health Check:**
+```bash
+curl http://localhost:3001/health
+```
+
+For detailed test scenarios, see [TESTING_GUIDE.md](TESTING_GUIDE.md).
+
+---
+
+## 🗺️ Roadmap
+
+We have exciting plans for the future!
+
+- **🤖 Machine Learning**: Transition from rule-based to ML-powered pairings.
+- **🌍 Multi-language**: Support for FR, EN, ES, IT.
+- **📊 Analytics**: Dashboard for user preferences and trends.
+
+See the full [ROADMAP.md](ROADMAP.md).
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## 📜 License
+
+This project is licensed under the MIT License.

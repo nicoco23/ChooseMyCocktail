@@ -4,6 +4,7 @@ import { Combobox } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon, PlusIcon, TrashIcon, PhotoIcon, ClockIcon, FireIcon } from '@heroicons/react/24/outline';
 import { foodService } from '../services/foodService';
 import { useTheme } from '../context/ThemeContext';
+import { API_UPLOAD_URL } from '../config';
 
 function SubmitRecipePage() {
   const { theme } = useTheme();
@@ -49,7 +50,7 @@ function SubmitRecipePage() {
 
     setUploading(true);
     try {
-      const response = await fetch('http://localhost:3001/api/upload', {
+      const response = await fetch(API_UPLOAD_URL, {
         method: 'POST',
         body: formData,
       });

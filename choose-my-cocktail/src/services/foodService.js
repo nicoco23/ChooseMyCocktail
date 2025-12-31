@@ -1,13 +1,15 @@
-const API_URL = 'http://localhost:3001/api/recipes';
+import { API_RECIPES_URL, API_INGREDIENTS_URL } from '../config';
 
 export const foodService = {
   /**
    * Récupère toutes les recettes depuis l'API
    */
-  getAllRecipes: async (isAdmin = false) => {
+  getAllRecipes: async (isAdmin = false, adminToken) => {
     try {
-      const url = isAdmin ? `${API_URL}?admin=true` : API_URL;
-      const response = await fetch(url);
+      const url = isAdmin ? `${API_RECIPES_URL}?admin=true&kind=food` : `${API_RECIPES_URL}?kind=food`;
+      const response = await fetch(url, {
+        headers: adminToken ? { 'x-admin-token': adminToken } : {}
+      });
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
@@ -27,12 +29,13 @@ export const foodService = {
   /**
    * Ajoute une recette via l'API
    */
-  addRecipe: async (recipe) => {
+  addRecipe: async (recipe, adminToken) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_RECIPES_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(adminToken ? { 'x-admin-token': adminToken } : {})
         },
         body: JSON.stringify(recipe),
       });
@@ -49,13 +52,14 @@ export const foodService = {
   /**
    * Met à jour une recette via l'API
    */
-  updateRecipe: async (recipe) => {
+  updateRecipe: async (recipe, adminToken) => {
     if (!recipe.id) throw new Error("Recipe ID is required for update");
     try {
-      const response = await fetch(`${API_URL}/${recipe.id}`, {
+      const response = await fetch(`${API_RECIPES_URL}/${recipe.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          ...(adminToken ? { 'x-admin-token': adminToken } : {})
         },
         body: JSON.stringify(recipe),
       });
@@ -72,10 +76,11 @@ export const foodService = {
   /**
    * Supprime une recette via l'API
    */
-  deleteRecipe: async (id) => {
+  deleteRecipe: async (id, adminToken) => {
     try {
-      const response = await fetch(`${API_URL}/${id}`, {
+      const response = await fetch(`${API_RECIPES_URL}/${id}`, {
         method: 'DELETE',
+        headers: adminToken ? { 'x-admin-token': adminToken } : {}
       });
       if (!response.ok) {
         throw new Error('Failed to delete recipe');
@@ -92,18 +97,9 @@ export const foodService = {
    */
   getAllIngredients: async () => {
     try {
-      const recipes = await foodService.getAllRecipes();
-      const dynamicIngredients = new Set();
-
-      recipes.forEach(recipe => {
-        if (recipe.ingredients) {
-          recipe.ingredients.forEach(ing => {
-            if (ing.nom) dynamicIngredients.add(ing.nom);
-          });
-        }
-      });
-
-      return Array.from(dynamicIngredients).sort((a, b) => a.localeCompare(b));
+      const response = await fetch(API_INGREDIENTS_URL);
+      const data = await response.json();
+      return (data.data || []).sort((a, b) => a.localeCompare(b));
     } catch (e) {
       console.error("Error fetching dynamic ingredients", e);
       return [];

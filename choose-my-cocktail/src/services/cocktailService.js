@@ -1,10 +1,12 @@
-const API_URL = 'http://localhost:3001/api/recipes';
+import { API_RECIPES_URL, API_INGREDIENTS_URL, API_PAIRINGS_URL } from '../config';
 
 export const cocktailService = {
-  getAllRecipes: async (isAdmin = false) => {
+  getAllRecipes: async (isAdmin = false, adminToken) => {
     try {
-      const url = isAdmin ? `${API_URL}?admin=true` : API_URL;
-      const response = await fetch(url);
+      const url = isAdmin ? `${API_RECIPES_URL}?admin=true&kind=beverage` : `${API_RECIPES_URL}?kind=beverage`;
+      const response = await fetch(url, {
+        headers: adminToken ? { 'x-admin-token': adminToken } : {}
+      });
       const json = await response.json();
       const dbRecipes = json.data || [];
 
@@ -23,7 +25,7 @@ export const cocktailService = {
    */
   getAllCocktails: async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(`${API_RECIPES_URL}?kind=beverage`);
       const data = await response.json();
       const dbRecipes = data.data || [];
 
@@ -43,12 +45,13 @@ export const cocktailService = {
   /**
    * Ajoute une recette via l'API
    */
-  addRecipe: async (recipe) => {
+  addRecipe: async (recipe, adminToken) => {
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(API_RECIPES_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(adminToken ? { 'x-admin-token': adminToken } : {})
         },
         body: JSON.stringify(recipe),
       });
@@ -65,13 +68,14 @@ export const cocktailService = {
   /**
    * Met à jour une recette via l'API
    */
-  updateRecipe: async (recipe) => {
+  updateRecipe: async (recipe, adminToken) => {
     if (!recipe.id) throw new Error("Recipe ID is required for update");
     try {
-      const response = await fetch(`${API_URL}/${recipe.id}`, {
+      const response = await fetch(`${API_RECIPES_URL}/${recipe.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          ...(adminToken ? { 'x-admin-token': adminToken } : {})
         },
         body: JSON.stringify(recipe),
       });
@@ -90,18 +94,9 @@ export const cocktailService = {
    */
   getAllIngredients: async () => {
     try {
-      const response = await fetch(API_URL);
+      const response = await fetch(API_INGREDIENTS_URL);
       const data = await response.json();
-      const recipes = data.data || [];
-
-      const ingredientsSet = new Set();
-      recipes.forEach(r => {
-        if (r.ingredients) {
-          r.ingredients.forEach(i => ingredientsSet.add(i.nom || i.alcool));
-        }
-      });
-
-      return Array.from(ingredientsSet).sort((a, b) => a.localeCompare(b));
+      return (data.data || []).sort((a, b) => a.localeCompare(b));
     } catch (error) {
       console.error("Error fetching ingredients:", error);
       return [];
@@ -171,5 +166,18 @@ export const cocktailService = {
       available: available.sort(sortByMatch),
       needToBuy: needToBuy.sort(sortByMatch)
     };
+  },
+
+  pairForFood: async (foodId, topK = 5) => {
+    const response = await fetch(API_PAIRINGS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ foodId, topK })
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch pairings');
+    }
+    const json = await response.json();
+    return json.data || [];
   }
 };

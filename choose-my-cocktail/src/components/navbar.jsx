@@ -88,6 +88,9 @@ function Navbar() {
                   <Link to="/all-food" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/all-food')}`}>
                     Toutes les Recettes
                   </Link>
+                  <Link to="/pairings" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/pairings')}`}>
+                    🍷 Accords
+                  </Link>
                   <Link to="/submit-recipe" className={`px-3 py-2 rounded-md text-sm font-medium ${isActive('/submit-recipe')}`}>
                     Proposer une recette
                   </Link>
