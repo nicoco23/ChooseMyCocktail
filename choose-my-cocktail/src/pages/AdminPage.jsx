@@ -1,7 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Combobox } from '@headlessui/react';
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import { cocktailService } from '../services/cocktailService';
 import { foodService } from '../services/foodService';
 import { useTheme } from '../context/ThemeContext';
@@ -10,7 +7,6 @@ import { API_UPLOAD_URL } from '../config';
 const FRONT_ADMIN_TOKEN = process.env.REACT_APP_ADMIN_TOKEN || 'admin123';
 
 function AdminPage({ mode = 'cocktail' }) {
-  const location = useLocation();
   const isFoodMode = mode === 'food';
   const service = isFoodMode ? foodService : cocktailService;
   const { theme } = useTheme();
@@ -36,13 +32,10 @@ function AdminPage({ mode = 'cocktail' }) {
     validated: true // Admins create validated recipes by default
   });
 
-  const [existingIngredients, setExistingIngredients] = useState([]);
-  const [query, setQuery] = useState('');
-
   // Edit mode state
   const [allRecipes, setAllRecipes] = useState([]);
   const [editingId, setEditingId] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  const [, setUploading] = useState(false);
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'form'
 
   const availableEquipment = ['Four', 'Plaques', 'Poêle', 'Casserole', 'Micro-ondes', 'Air Fryer', 'Robot Cuiseur', 'Barbecue', 'Friteuse', 'Mixeur'];
@@ -66,11 +59,6 @@ function AdminPage({ mode = 'cocktail' }) {
 
   useEffect(() => {
     if (isAuthenticated) {
-        const loadIngredients = async () => {
-            const ingredients = await service.getAllIngredients();
-            setExistingIngredients(ingredients);
-        };
-        loadIngredients();
         loadRecipes();
     }
   }, [isAuthenticated, loadRecipes, service]);
@@ -176,13 +164,6 @@ function AdminPage({ mode = 'cocktail' }) {
       }
     }
   };
-
-  const filteredIngredients =
-    query === ''
-      ? existingIngredients
-      : existingIngredients.filter((ing) =>
-          ing.toLowerCase().includes(query.toLowerCase())
-        );
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -328,28 +309,38 @@ function AdminPage({ mode = 'cocktail' }) {
 
   // Styles helpers
   const getContainerClasses = () => {
+    if (theme === 'kitty') {
+      return "min-h-screen bg-hk-pink-pale text-hk-red-dark p-8 font-display bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]";
+    }
     if (isFoodMode) {
-      return theme === 'kitty' ? "min-h-screen bg-hk-pink-pale text-hk-red-dark p-8" : "min-h-screen bg-food-yellow/10 text-food-dark p-8";
+      return "min-h-screen bg-food-yellow/10 text-food-dark p-8";
     }
     return "min-h-screen bg-slate-900 text-slate-100 p-8";
   };
   const getCardClasses = () => {
+    if (theme === 'kitty') {
+      return "max-w-4xl mx-auto bg-white/90 backdrop-blur-sm border-2 border-hk-pink-hot p-6 rounded-3xl shadow-[0_0_15px_rgba(255,105,180,0.3)]";
+    }
     if (isFoodMode) {
-      return theme === 'kitty' ? "max-w-4xl mx-auto bg-white border border-hk-pink-light/50 p-6 rounded-xl shadow-xl shadow-hk-red-light/10" : "max-w-4xl mx-auto bg-white border border-food-purple/10 p-6 rounded-xl shadow-xl";
+      return "max-w-4xl mx-auto bg-white border border-food-purple/10 p-6 rounded-xl shadow-xl";
     }
     return "max-w-4xl mx-auto bg-slate-800 p-6 rounded-xl shadow-xl";
   };
   const getButtonPrimaryClasses = () => {
+    if (theme === 'kitty') {
+      return "bg-hk-pink-hot hover:bg-hk-pink-hot/90 text-white font-bold py-3 rounded-full shadow-lg transform hover:scale-105 transition-all duration-300 border-2 border-white";
+    }
     if (isFoodMode) {
-      return theme === 'kitty' ? "bg-hk-red-light hover:bg-hk-red-light/80 text-white font-bold py-3 rounded-lg transition-colors" : "bg-food-purple hover:bg-food-purple/80 text-white font-bold py-3 rounded-lg transition-colors";
+      return "bg-food-purple hover:bg-food-purple/80 text-white font-bold py-3 rounded-lg transition-colors";
     }
     return "bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition-colors";
   };
   const getInputClasses = () => {
+    if (theme === 'kitty') {
+      return "w-full bg-white/80 border-2 border-hk-pink-light rounded-2xl p-3 focus:ring-2 focus:ring-hk-pink-hot outline-none text-hk-red-dark placeholder-hk-pink-hot/50";
+    }
     if (isFoodMode) {
-      return theme === 'kitty'
-        ? "w-full bg-white border border-hk-pink-light/30 rounded p-2 focus:ring-2 focus:ring-hk-red-light outline-none text-hk-red-dark placeholder-hk-red-dark/30"
-        : "w-full bg-white border border-food-purple/20 rounded p-2 focus:ring-2 focus:ring-food-orange outline-none text-food-dark placeholder-food-dark/30";
+      return "w-full bg-white border border-food-purple/20 rounded p-2 focus:ring-2 focus:ring-food-orange outline-none text-food-dark placeholder-food-dark/30";
     }
     return "w-full bg-slate-700 border border-slate-600 rounded p-2 focus:ring-2 focus:ring-amber-500 outline-none";
   };
@@ -357,19 +348,19 @@ function AdminPage({ mode = 'cocktail' }) {
   if (!isAuthenticated) {
     return (
       <div className={getContainerClasses()}>
-        <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded-xl shadow-xl">
-          <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Accès Administrateur</h2>
+        <div className={theme === 'kitty' ? "max-w-md mx-auto mt-20 p-6 bg-white/90 backdrop-blur-sm border-2 border-hk-pink-hot rounded-3xl shadow-[0_0_15px_rgba(255,105,180,0.3)]" : "max-w-md mx-auto mt-20 p-6 bg-white rounded-xl shadow-xl"}>
+          <h2 className={theme === 'kitty' ? "text-2xl font-bold mb-4 text-center text-hk-red-dark font-display" : "text-2xl font-bold mb-4 text-center text-gray-800"}>Accès Administrateur</h2>
           <form onSubmit={handleLogin}>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Mot de passe"
-              className="w-full p-3 border rounded-lg mb-4 text-gray-800"
+              className={theme === 'kitty' ? "w-full p-3 border-2 border-hk-pink-light rounded-2xl mb-4 text-hk-red-dark focus:ring-2 focus:ring-hk-pink-hot outline-none" : "w-full p-3 border rounded-lg mb-4 text-gray-800"}
             />
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700"
+              className={theme === 'kitty' ? "w-full bg-hk-pink-hot text-white py-3 rounded-full font-bold hover:bg-hk-pink-hot/90 shadow-lg transform hover:scale-105 transition-all duration-300" : "w-full bg-indigo-600 text-white py-3 rounded-lg font-bold hover:bg-indigo-700"}
             >
               Se connecter
             </button>
@@ -392,7 +383,7 @@ function AdminPage({ mode = 'cocktail' }) {
               <h2 className={`text-xl font-bold ${theme === 'kitty' ? 'text-hk-red-light' : 'text-food-orange'}`}>Liste des Recettes</h2>
               <button
                 onClick={handleCreateNew}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                className={theme === 'kitty' ? "px-4 py-2 bg-hk-pink-hot text-white rounded-full hover:bg-hk-pink-hot/90 shadow-md" : "px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"}
               >
                 + Nouvelle Recette
               </button>
@@ -400,7 +391,7 @@ function AdminPage({ mode = 'cocktail' }) {
 
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className={theme === 'kitty' ? 'bg-hk-pink-pale/50' : 'bg-food-yellow/20'}>
+                <thead className={theme === 'kitty' ? 'bg-hk-pink-pale/50 text-hk-red-dark' : 'bg-food-yellow/20 text-gray-500'}>
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Statut</th>
                     <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nom</th>
@@ -410,14 +401,14 @@ function AdminPage({ mode = 'cocktail' }) {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {allRecipes.map((r) => (
-                    <tr key={r.id} className="hover:bg-black/5">
+                    <tr key={r.id} className={theme === 'kitty' ? "hover:bg-hk-pink-light/10 text-hk-red-dark" : "hover:bg-black/5 text-gray-900"}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {r.validated ? (
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            <span className={theme === 'kitty' ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-hk-green-light text-white" : "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"}>
                                 Validé
                             </span>
                         ) : (
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            <span className={theme === 'kitty' ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-hk-pink-light text-white" : "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"}>
                                 En attente
                             </span>
                         )}
@@ -428,20 +419,20 @@ function AdminPage({ mode = 'cocktail' }) {
                         {!r.validated && (
                             <button
                                 onClick={() => handleValidateRecipe(r)}
-                                className="text-green-600 hover:text-green-900 font-bold"
+                                className={theme === 'kitty' ? "text-hk-green-dark hover:text-hk-green-dark/80 font-bold" : "text-green-600 hover:text-green-900 font-bold"}
                             >
                                 Valider
                             </button>
                         )}
                         <button
                           onClick={() => handleEditRecipe(r)}
-                          className="text-indigo-600 hover:text-indigo-900"
+                          className={theme === 'kitty' ? "text-hk-blue-dark hover:text-hk-blue-dark/80" : "text-indigo-600 hover:text-indigo-900"}
                         >
                           Modifier
                         </button>
                         <button
                           onClick={() => handleDeleteRecipe(r.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className={theme === 'kitty' ? "text-hk-red-hot hover:text-hk-red-hot/80" : "text-red-600 hover:text-red-900"}
                         >
                           Supprimer
                         </button>

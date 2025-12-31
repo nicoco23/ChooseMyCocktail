@@ -26,7 +26,7 @@ function Cocktail({ cocktail, onSelect, theme }) {
 
   const getCardClasses = () => {
     if (theme === 'kitty') {
-      return "group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-hk-red-light/20 transition-all duration-300 border border-hk-pink-light/50 hover:border-hk-red-light/50 h-full flex flex-col relative";
+      return "group bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden hover:shadow-[0_0_15px_rgba(255,105,180,0.4)] transition-all duration-300 border-2 border-hk-pink-light hover:border-hk-pink-hot h-full flex flex-col relative transform hover:-translate-y-1 font-display";
     }
     if (isFoodContext) {
       return "group bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl hover:shadow-food-orange/20 transition-all duration-300 border border-food-purple/10 hover:border-food-orange/30 h-full flex flex-col relative";
@@ -36,17 +36,12 @@ function Cocktail({ cocktail, onSelect, theme }) {
 
   const getPlaceholderClasses = () => {
     if (theme === 'kitty') {
-      return "absolute inset-0 bg-gradient-to-br from-hk-pink-light/20 to-hk-yellow/20 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center";
+      return "absolute inset-0 bg-gradient-to-br from-hk-pink-light to-hk-pink-pale group-hover:scale-105 transition-transform duration-500 flex items-center justify-center";
     }
     if (isFoodContext) {
       return "absolute inset-0 bg-gradient-to-br from-food-yellow/20 to-food-orange/10 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center";
     }
     return "absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-600 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center";
-  };
-
-  const getTitleOverlayClasses = () => {
-    // Deprecated: Title is now below the image
-    return "hidden";
   };
 
   const getSubtextClasses = () => {
@@ -87,9 +82,10 @@ function Cocktail({ cocktail, onSelect, theme }) {
             category === 'entrée' ? 'bg-emerald-900/90 text-emerald-100 border-emerald-700' :
             category === 'plat' ? 'bg-orange-900/90 text-orange-100 border-orange-700' :
             category === 'dessert' ? 'bg-purple-900/90 text-purple-100 border-purple-700' :
+            category === 'food' ? 'bg-orange-900/90 text-orange-100 border-orange-700' :
             'bg-amber-900/90 text-amber-100 border-amber-700'
           }`}>
-            {category.charAt(0).toUpperCase() + category.slice(1)}
+            {category === 'food' ? 'Plat' : category.charAt(0).toUpperCase() + category.slice(1)}
           </div>
         )}
 

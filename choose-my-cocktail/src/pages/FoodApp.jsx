@@ -105,11 +105,11 @@ function FoodApp() {
   const filteredToBuy = recipesToBuy;
 
   // Theme Classes Helpers
-  const getBgClass = () => theme === 'kitty' ? 'bg-hk-pink-pale text-hk-red-dark' : 'bg-food-yellow/10 text-food-dark';
+  const getBgClass = () => theme === 'kitty' ? "bg-hk-pink-pale text-hk-red-dark font-display bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" : 'bg-food-yellow/10 text-food-dark';
   const getHeroGradient = () => theme === 'kitty' ? 'from-hk-pink-light/30 to-hk-yellow/20' : 'from-food-yellow/20 to-food-orange/10';
   const getPrimaryText = () => theme === 'kitty' ? 'text-hk-red-dark' : 'text-food-orange';
   const getSecondaryText = () => theme === 'kitty' ? 'text-hk-blue-dark' : 'text-food-purple';
-  const getContainerBorder = () => theme === 'kitty' ? 'border-hk-pink-light/50 shadow-hk-red-dark/10' : 'border-food-orange/20 shadow-food-purple/10';
+  const getContainerBorder = () => theme === 'kitty' ? 'border-hk-pink-light/50 shadow-hk-red-dark/10 backdrop-blur-sm bg-white/90' : 'border-food-orange/20 shadow-food-purple/10';
   const getButtonClass = (isActive) => {
     if (theme === 'kitty') {
       return isActive

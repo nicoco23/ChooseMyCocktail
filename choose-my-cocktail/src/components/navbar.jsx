@@ -10,37 +10,37 @@ function Navbar() {
   const path = location.pathname;
 
   const isCocktailContext = path.includes('cocktail') || path.includes('/admin/cocktails');
-  const isFoodContext = path.includes('food') || path.includes('/admin/food') || path.includes('/submit-recipe');
+  const isFoodContext = path.includes('food') || path.includes('/admin/food') || path.includes('/submit-recipe') || path.includes('/pairings');
 
   const isHome = path === '/';
 
   const getNavClasses = () => {
+    if (theme === 'kitty') {
+      return "sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-hk-pink-light/50 shadow-sm shadow-hk-red-light/10 font-display";
+    }
     if (isFoodContext) {
-      if (theme === 'kitty') {
-        return "sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-hk-pink-light/50 shadow-sm shadow-hk-red-light/10";
-      }
       return "sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-food-orange/20 shadow-sm";
     }
     return "sticky top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 shadow-lg";
   };
 
   const getLogoClasses = () => {
+    if (theme === 'kitty') {
+      return "text-2xl font-display font-bold bg-gradient-to-r from-hk-red-light to-hk-red-dark bg-clip-text text-transparent group-hover:opacity-80 transition-opacity drop-shadow-sm";
+    }
     if (isFoodContext) {
-      if (theme === 'kitty') {
-        return "text-2xl font-display font-bold bg-gradient-to-r from-hk-red-light to-hk-red-dark bg-clip-text text-transparent group-hover:opacity-80 transition-opacity";
-      }
       return "text-2xl font-display font-bold bg-gradient-to-r from-food-orange to-food-purple bg-clip-text text-transparent group-hover:opacity-80 transition-opacity";
     }
     return "text-2xl font-display font-bold bg-gradient-to-r from-amber-500 to-pink-500 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity";
   };
 
   const isActive = (p) => {
+    if (theme === 'kitty') {
+      return path === p
+        ? "text-hk-red-dark font-bold"
+        : "text-hk-red-dark/60 hover:text-hk-red-light transition-colors";
+    }
     if (isFoodContext) {
-      if (theme === 'kitty') {
-        return path === p
-          ? "text-hk-red-dark font-bold"
-          : "text-hk-red-dark/60 hover:text-hk-red-light transition-colors";
-      }
       return path === p
         ? "text-food-orange font-bold"
         : "text-food-dark/60 hover:text-food-purple transition-colors";

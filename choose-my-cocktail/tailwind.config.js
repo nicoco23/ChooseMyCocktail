@@ -5,6 +5,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Fredoka', 'sans-serif'],
+        display: ['Fredoka', 'cursive'],
+      },
       colors: {
         food: {
           dark: '#2b1821ff',
@@ -21,10 +25,12 @@ module.exports = {
           pink: {
             light: '#FFB7C5',
             pale: '#FFF0F5',
+            hot: '#FF69B4',
           },
           red: {
             dark: '#C2185B',
             light: '#FF1493',
+            bow: '#FF0000',
           }
         }
       }

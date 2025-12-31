@@ -40,7 +40,7 @@ function AllFoodPage() {
   };
 
   // Theme Classes Helpers
-  const getBgClass = () => theme === 'kitty' ? 'bg-hk-pink-pale text-hk-red-dark' : 'bg-food-yellow/10 text-food-dark';
+  const getBgClass = () => theme === 'kitty' ? "bg-hk-pink-pale text-hk-red-dark font-display bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" : 'bg-food-yellow/10 text-food-dark';
   const getPrimaryText = () => theme === 'kitty' ? 'text-hk-red-dark' : 'text-food-orange';
   const getSecondaryText = () => theme === 'kitty' ? 'text-hk-blue-dark' : 'text-food-purple';
 

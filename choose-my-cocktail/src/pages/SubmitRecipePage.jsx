@@ -230,11 +230,11 @@ function SubmitRecipePage() {
 
   const styles = {
     container: isKitty
-      ? "min-h-screen bg-gradient-to-br from-hk-pink-pale to-white text-hk-red-dark p-4 md:p-8"
+      ? "min-h-screen bg-hk-pink-pale text-hk-red-dark p-4 md:p-8 font-display bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"
       : "min-h-screen bg-gradient-to-br from-food-yellow/20 to-white text-food-dark p-4 md:p-8",
 
     card: isKitty
-      ? "max-w-5xl mx-auto bg-white/80 backdrop-blur-sm border border-hk-pink-light/30 rounded-3xl shadow-xl shadow-hk-red-light/10 overflow-hidden"
+      ? "max-w-5xl mx-auto bg-white/90 backdrop-blur-sm border-2 border-hk-pink-hot rounded-3xl shadow-[0_0_15px_rgba(255,105,180,0.3)] overflow-hidden"
       : "max-w-5xl mx-auto bg-white/90 backdrop-blur-sm border border-food-purple/10 rounded-3xl shadow-xl overflow-hidden",
 
     header: isKitty

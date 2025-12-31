@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Ingredient from './Ingredients';
-import { XMarkIcon, PencilSquareIcon, ClipboardDocumentIcon, CheckIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon, ClipboardDocumentIcon, CheckIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
 
 function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
-  const navigate = useNavigate();
   const location = useLocation();
   const [copied, setCopied] = useState(false);
   const [copiedMissing, setCopiedMissing] = useState(false);
@@ -12,10 +11,6 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
   const category = (cocktail.category || '').toLowerCase();
 
   if (!cocktail) return null;
-
-  const handleEdit = () => {
-    navigate('/admin/food', { state: { recipeToEdit: cocktail } });
-  };
 
   const handleCopyIngredients = () => {
     const ingredientsText = cocktail.ingredients
@@ -47,7 +42,7 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
 
   const getModalClasses = () => {
     if (theme === 'kitty') {
-      return "relative w-full max-w-3xl bg-white rounded-2xl border border-hk-pink-light/50 shadow-2xl shadow-hk-red-light/20 overflow-hidden";
+      return "relative w-full max-w-3xl bg-white/90 backdrop-blur-sm rounded-3xl border-2 border-hk-pink-hot shadow-[0_0_15px_rgba(255,105,180,0.3)] overflow-hidden font-display";
     }
     if (isFoodContext) {
       return "relative w-full max-w-3xl bg-white rounded-2xl border border-food-purple/10 shadow-2xl overflow-hidden";
@@ -57,7 +52,7 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
 
   const getButtonClasses = () => {
     if (theme === 'kitty') {
-      return "absolute top-4 right-4 z-10 text-hk-red-dark/60 hover:text-hk-red-dark transition-colors bg-white/60 border border-hk-pink-light/20 rounded-full p-2";
+      return "absolute top-4 right-4 z-10 text-hk-red-dark hover:text-hk-pink-hot transition-colors bg-white/80 border-2 border-hk-pink-light rounded-full p-2 shadow-md";
     }
     if (isFoodContext) {
       return "absolute top-4 right-4 z-10 text-food-dark/60 hover:text-food-dark transition-colors bg-white/60 border border-food-purple/10 rounded-full p-2";
@@ -65,19 +60,9 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
     return "absolute top-4 right-4 z-10 text-slate-400 hover:text-white transition-colors bg-slate-900/60 border border-slate-700 rounded-full p-2";
   };
 
-  const getEditButtonClasses = () => {
-    if (theme === 'kitty') {
-      return "absolute top-4 right-16 z-10 text-hk-red-light hover:text-hk-red-light/80 transition-colors bg-white/60 border border-hk-pink-light/20 rounded-full p-2";
-    }
-    if (isFoodContext) {
-      return "absolute top-4 right-16 z-10 text-food-orange hover:text-food-orange/80 transition-colors bg-white/60 border border-food-purple/10 rounded-full p-2";
-    }
-    return "absolute top-4 right-16 z-10 text-amber-500 hover:text-amber-400 transition-colors bg-slate-900/60 border border-slate-700 rounded-full p-2";
-  };
-
   const getPlaceholderClasses = () => {
     if (theme === 'kitty') {
-      return "w-full h-full bg-gradient-to-br from-hk-pink-light/20 to-hk-yellow/20 flex items-center justify-center";
+      return "w-full h-full bg-gradient-to-br from-hk-pink-light to-hk-pink-pale flex items-center justify-center";
     }
     if (isFoodContext) {
       return "w-full h-full bg-gradient-to-br from-food-yellow/20 to-food-orange/10 flex items-center justify-center";
@@ -96,7 +81,7 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
   };
 
   const getTitleClasses = () => {
-    if (theme === 'kitty') return "text-3xl font-extrabold text-hk-red-dark drop-shadow-sm";
+    if (theme === 'kitty') return "text-4xl font-extrabold text-hk-red-dark drop-shadow-md";
     return isFoodContext ? "text-3xl font-extrabold text-food-dark drop-shadow-sm" : "text-3xl font-extrabold text-white drop-shadow";
   };
 
@@ -162,6 +147,11 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
 
         <div className="p-6 pb-0">
             <h1 className={getTitleClasses()}>{cocktail.nom}</h1>
+            {cocktail.description && (
+              <p className={`mt-2 text-lg italic ${isFoodContext ? 'text-food-dark/70' : 'text-slate-400'}`}>
+                {cocktail.description}
+              </p>
+            )}
         </div>
 
         <div className="grid md:grid-cols-2">
@@ -187,6 +177,20 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
             <div className={getOverlayClasses()}></div>
             <div className="absolute bottom-0 left-0 p-6">
               <div className={getSubtextClasses()}>
+                {/* Category Badge */}
+                {category && (
+                  <span className={`text-xs font-bold px-2 py-1 rounded-full border shadow-sm mr-2 ${
+                    category === 'mocktail' ? 'bg-green-900/90 text-green-100 border-green-700' :
+                    category === 'smoothie' ? 'bg-pink-900/90 text-pink-100 border-pink-700' :
+                    category === 'entrée' ? 'bg-emerald-900/90 text-emerald-100 border-emerald-700' :
+                    category === 'plat' ? 'bg-orange-900/90 text-orange-100 border-orange-700' :
+                    category === 'dessert' ? 'bg-purple-900/90 text-purple-100 border-purple-700' :
+                    category === 'food' ? 'bg-orange-900/90 text-orange-100 border-orange-700' :
+                    'bg-amber-900/90 text-amber-100 border-amber-700'
+                  }`}>
+                    {category === 'food' ? 'Plat' : category.charAt(0).toUpperCase() + category.slice(1)}
+                  </span>
+                )}
                 {cocktail.matchPercentage !== undefined && (
                   <span className={getBadgeClasses()}>
                     Compatibilité : {cocktail.matchPercentage}%
@@ -233,11 +237,33 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
                 <div className="flex flex-wrap gap-2">
                   {cocktail.equipment.map((eq, idx) => (
                     <span key={idx} className={`px-3 py-1 rounded-full text-xs font-bold border shadow-sm ${
-                      isFoodContext
-                        ? "bg-food-yellow/20 text-food-dark border-food-purple/20"
-                        : "bg-blue-900/50 text-blue-100 border-blue-700"
+                      theme === 'kitty'
+                        ? "bg-hk-pink-pale text-hk-red-dark border-hk-pink-light/30"
+                        : (isFoodContext
+                          ? "bg-food-yellow/20 text-food-dark border-food-purple/20"
+                          : "bg-blue-900/50 text-blue-100 border-blue-700")
                     }`}>
                       {eq}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tags Section */}
+            {cocktail.tags && cocktail.tags.length > 0 && (
+              <div>
+                <h2 className={getSectionTitleClasses()}>Tags</h2>
+                <div className="flex flex-wrap gap-2">
+                  {cocktail.tags.map((tag, idx) => (
+                    <span key={idx} className={`px-3 py-1 rounded-full text-xs font-bold border shadow-sm ${
+                      theme === 'kitty'
+                        ? "bg-hk-pink-pale text-hk-red-dark border-hk-pink-light/30"
+                        : (isFoodContext
+                          ? "bg-green-100 text-green-800 border-green-200"
+                          : "bg-slate-700 text-slate-300 border-slate-600")
+                    }`}>
+                      {tag}
                     </span>
                   ))}
                 </div>
@@ -295,29 +321,41 @@ function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
               )}
             </div>
 
-            {(cocktail.etapes || cocktail.recette || cocktail.description) && (
-              <div>
-                <h2 className={getSectionTitleClasses()}>Préparation</h2>
-                {cocktail.etapes ? (
-                  <div className="space-y-4">
-                    {cocktail.etapes.map((step, idx) => (
-                      <div key={idx} className={getStepBoxClasses()}>
-                        <h3 className={getStepTitleClasses()}>
-                          {step.titre || `Étape ${idx + 1}`}
-                        </h3>
-                        <p className={getBodyTextClasses()}>
-                          {step.description}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className={`${getBodyTextClasses()} whitespace-pre-line`}>
-                    {cocktail.recette || cocktail.description}
-                  </p>
-                )}
-              </div>
-            )}
+            {(() => {
+              let steps = cocktail.etapes || cocktail.steps;
+              if (typeof steps === 'string') {
+                try { steps = JSON.parse(steps); } catch (e) {}
+              }
+
+              const hasSteps = Array.isArray(steps) && steps.length > 0;
+              const hasText = cocktail.recette || cocktail.description;
+
+              if (!hasSteps && !hasText) return null;
+
+              return (
+                <div>
+                  <h2 className={getSectionTitleClasses()}>Préparation</h2>
+                  {hasSteps ? (
+                    <div className="space-y-4">
+                      {steps.map((step, idx) => (
+                        <div key={idx} className={getStepBoxClasses()}>
+                          <h3 className={getStepTitleClasses()}>
+                            {step.titre || `Étape ${idx + 1}`}
+                          </h3>
+                          <p className={getBodyTextClasses()}>
+                            {step.description || (typeof step === 'string' ? step : '')}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className={`${getBodyTextClasses()} whitespace-pre-line`}>
+                      {cocktail.recette || cocktail.description}
+                    </p>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
       </div>

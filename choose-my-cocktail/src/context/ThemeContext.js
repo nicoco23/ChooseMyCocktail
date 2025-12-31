@@ -7,7 +7,7 @@ export const useTheme = () => useContext(ThemeContext);
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('foodTheme');
-    return saved || 'creme';
+    return saved || 'kitty';
   });
 
   useEffect(() => {
