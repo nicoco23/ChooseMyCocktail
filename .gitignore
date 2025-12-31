@@ -1,0 +1,5 @@
+node_modules/
+choose-my-cocktail/node_modules/
+choose-my-cocktail/server/node_modules/
+*.log
+npm-debug.log*
