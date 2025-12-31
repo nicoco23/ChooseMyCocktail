@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Ingredient from './Ingredients';
-import { XMarkIcon, PencilSquareIcon } from '@heroicons/react/24/solid';
+import { XMarkIcon, PencilSquareIcon, ClipboardDocumentIcon, CheckIcon, ShoppingCartIcon } from '@heroicons/react/24/solid';
 
-function CocktailModal({ cocktail, onClose }) {
+function CocktailModal({ cocktail, onClose, theme, userIngredients = [] }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [copied, setCopied] = useState(false);
+  const [copiedMissing, setCopiedMissing] = useState(false);
   const isFoodContext = location.pathname.includes('food') || location.pathname.includes('admin/food');
+  const category = (cocktail.category || '').toLowerCase();
 
   if (!cocktail) return null;
 
@@ -14,7 +17,36 @@ function CocktailModal({ cocktail, onClose }) {
     navigate('/admin/food', { state: { recipeToEdit: cocktail } });
   };
 
+  const handleCopyIngredients = () => {
+    const ingredientsText = cocktail.ingredients
+      .map(i => `${i.dose ? i.dose + ' ' : ''}${i.nom || i.alcool}`)
+      .join('\n');
+    const text = `Ingrédients pour ${cocktail.nom} :\n${ingredientsText}`;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyMissingIngredients = () => {
+    const missing = cocktail.ingredients.filter(ing => {
+      const name = ing.nom || ing.alcool;
+      return !userIngredients.some(userIng => userIng.toLowerCase() === name.toLowerCase());
+    });
+
+    const ingredientsText = missing
+      .map(i => `${i.dose ? i.dose + ' ' : ''}${i.nom || i.alcool}`)
+      .join('\n');
+
+    const text = `Liste de courses pour ${cocktail.nom} :\n${ingredientsText}`;
+    navigator.clipboard.writeText(text);
+    setCopiedMissing(true);
+    setTimeout(() => setCopiedMissing(false), 2000);
+  };
+
   const getModalClasses = () => {
+    if (theme === 'kitty') {
+      return "relative w-full max-w-3xl bg-white rounded-2xl border border-hk-pink-light/50 shadow-2xl shadow-hk-red-light/20 overflow-hidden";
+    }
     if (isFoodContext) {
       return "relative w-full max-w-3xl bg-white rounded-2xl border border-food-purple/10 shadow-2xl overflow-hidden";
     }
@@ -22,6 +54,9 @@ function CocktailModal({ cocktail, onClose }) {
   };
 
   const getButtonClasses = () => {
+    if (theme === 'kitty') {
+      return "absolute top-4 right-4 z-10 text-hk-red-dark/60 hover:text-hk-red-dark transition-colors bg-white/60 border border-hk-pink-light/20 rounded-full p-2";
+    }
     if (isFoodContext) {
       return "absolute top-4 right-4 z-10 text-food-dark/60 hover:text-food-dark transition-colors bg-white/60 border border-food-purple/10 rounded-full p-2";
     }
@@ -29,6 +64,9 @@ function CocktailModal({ cocktail, onClose }) {
   };
 
   const getEditButtonClasses = () => {
+    if (theme === 'kitty') {
+      return "absolute top-4 right-16 z-10 text-hk-red-light hover:text-hk-red-light/80 transition-colors bg-white/60 border border-hk-pink-light/20 rounded-full p-2";
+    }
     if (isFoodContext) {
       return "absolute top-4 right-16 z-10 text-food-orange hover:text-food-orange/80 transition-colors bg-white/60 border border-food-purple/10 rounded-full p-2";
     }
@@ -36,6 +74,9 @@ function CocktailModal({ cocktail, onClose }) {
   };
 
   const getPlaceholderClasses = () => {
+    if (theme === 'kitty') {
+      return "w-full h-full bg-gradient-to-br from-hk-pink-light/20 to-hk-yellow/20 flex items-center justify-center";
+    }
     if (isFoodContext) {
       return "w-full h-full bg-gradient-to-br from-food-yellow/20 to-food-orange/10 flex items-center justify-center";
     }
@@ -43,6 +84,9 @@ function CocktailModal({ cocktail, onClose }) {
   };
 
   const getOverlayClasses = () => {
+    if (theme === 'kitty') {
+      return "absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent";
+    }
     if (isFoodContext) {
       return "absolute inset-0 bg-gradient-to-t from-white via-white/60 to-transparent";
     }
@@ -50,14 +94,19 @@ function CocktailModal({ cocktail, onClose }) {
   };
 
   const getTitleClasses = () => {
+    if (theme === 'kitty') return "text-3xl font-extrabold text-hk-red-dark drop-shadow-sm";
     return isFoodContext ? "text-3xl font-extrabold text-food-dark drop-shadow-sm" : "text-3xl font-extrabold text-white drop-shadow";
   };
 
   const getSubtextClasses = () => {
+    if (theme === 'kitty') return "flex items-center gap-4 mt-2 text-sm text-hk-red-dark/80";
     return isFoodContext ? "flex items-center gap-4 mt-2 text-sm text-food-dark/80" : "flex items-center gap-4 mt-2 text-sm text-slate-300";
   };
 
   const getBadgeClasses = () => {
+    if (theme === 'kitty') {
+      return "bg-white/50 px-2 py-1 rounded backdrop-blur-sm border border-hk-pink-light/20 text-hk-red-dark";
+    }
     if (isFoodContext) {
       return "bg-white/50 px-2 py-1 rounded backdrop-blur-sm border border-food-purple/20 text-food-dark";
     }
@@ -65,10 +114,14 @@ function CocktailModal({ cocktail, onClose }) {
   };
 
   const getSectionTitleClasses = () => {
+    if (theme === 'kitty') return "text-xl font-bold text-hk-red-light mb-3";
     return isFoodContext ? "text-xl font-bold text-food-orange mb-3" : "text-xl font-bold text-amber-500 mb-3";
   };
 
   const getStepBoxClasses = () => {
+    if (theme === 'kitty') {
+      return "bg-hk-pink-pale/30 p-3 rounded-lg border border-hk-pink-light/20";
+    }
     if (isFoodContext) {
       return "bg-food-yellow/10 p-3 rounded-lg border border-food-purple/10";
     }
@@ -76,31 +129,34 @@ function CocktailModal({ cocktail, onClose }) {
   };
 
   const getStepTitleClasses = () => {
+    if (theme === 'kitty') return "text-sm font-bold text-hk-red-light uppercase tracking-wide mb-1";
     return isFoodContext ? "text-sm font-bold text-food-orange uppercase tracking-wide mb-1" : "text-sm font-bold text-amber-400 uppercase tracking-wide mb-1";
   };
 
   const getBodyTextClasses = () => {
+    if (theme === 'kitty') return "text-hk-red-dark/90 leading-relaxed text-sm";
     return isFoodContext ? "text-food-dark/90 leading-relaxed text-sm" : "text-slate-200 leading-relaxed text-sm";
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 sm:px-6">
-      <div
-        className={`absolute inset-0 backdrop-blur-sm ${isFoodContext ? 'bg-white/60' : 'bg-slate-900/80'}`}
-        onClick={onClose}
-      />
-
-      <div
-        className={getModalClasses()}
-        onClick={e => e.stopPropagation()}
-      >
-        <button
+    <div className="fixed inset-0 z-[100] overflow-y-auto">
+      <div className="flex min-h-full justify-center p-4 text-center items-start pt-4 md:items-center">
+        <div
+          className={`fixed inset-0 backdrop-blur-sm ${theme === 'kitty' ? 'bg-hk-pink-pale/60' : (isFoodContext ? 'bg-white/60' : 'bg-slate-900/80')}`}
           onClick={onClose}
-          className={getButtonClasses()}
-          aria-label="Fermer"
+        />
+
+        <div
+          className={`${getModalClasses()} transform transition-all text-left`}
+          onClick={e => e.stopPropagation()}
         >
-          <XMarkIcon className="h-5 w-5" />
-        </button>
+          <button
+            onClick={onClose}
+            className={getButtonClasses()}
+            aria-label="Fermer"
+          >
+            <XMarkIcon className="h-5 w-5" />
+          </button>
 
         {/* Edit Button (only for DB recipes) */}
         {cocktail.id && (
@@ -114,6 +170,10 @@ function CocktailModal({ cocktail, onClose }) {
           </button>
         )}
 
+        <div className="p-6 pb-0">
+            <h1 className={getTitleClasses()}>{cocktail.nom}</h1>
+        </div>
+
         <div className="grid md:grid-cols-2">
           <div className="relative h-64 md:h-full">
             {cocktail.image ? (
@@ -124,12 +184,18 @@ function CocktailModal({ cocktail, onClose }) {
               />
             ) : (
               <div className={getPlaceholderClasses()}>
-                <span className="text-7xl">🍸</span>
+                <span className="text-7xl">
+                {category === 'smoothie' ? '🥤' :
+                 category === 'mocktail' ? '🍹' :
+                 category === 'entrée' ? '🥗' :
+                 category === 'plat' ? '🥘' :
+                 category === 'dessert' ? '🍰' :
+                 (isFoodContext ? '🍽️' : '🍸')}
+                </span>
               </div>
             )}
             <div className={getOverlayClasses()}></div>
             <div className="absolute bottom-0 left-0 p-6">
-              <h1 className={getTitleClasses()}>{cocktail.nom}</h1>
               <div className={getSubtextClasses()}>
                 {cocktail.matchPercentage !== undefined && (
                   <span className={getBadgeClasses()}>
@@ -189,7 +255,39 @@ function CocktailModal({ cocktail, onClose }) {
             )}
 
             <div>
-              <h2 className={getSectionTitleClasses()}>Ingrédients</h2>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className={getSectionTitleClasses().replace('mb-3', '')}>Ingrédients</h2>
+                <div className="flex gap-2">
+                  {userIngredients.length > 0 && (
+                    <button
+                      onClick={handleCopyMissingIngredients}
+                      className={`p-1.5 rounded-full transition-colors ${
+                        theme === 'kitty'
+                          ? 'text-hk-blue-light hover:bg-hk-pink-pale hover:text-hk-blue-dark'
+                          : (isFoodContext
+                            ? 'text-food-purple hover:bg-food-yellow/20 hover:text-food-orange'
+                            : 'text-slate-400 hover:bg-slate-700 hover:text-white')
+                      }`}
+                      title="Copier la liste de courses (sans ce que j'ai déjà)"
+                    >
+                      {copiedMissing ? <CheckIcon className="h-5 w-5" /> : <ShoppingCartIcon className="h-5 w-5" />}
+                    </button>
+                  )}
+                  <button
+                    onClick={handleCopyIngredients}
+                    className={`p-1.5 rounded-full transition-colors ${
+                      theme === 'kitty'
+                        ? 'text-hk-blue-light hover:bg-hk-pink-pale hover:text-hk-blue-dark'
+                        : (isFoodContext
+                          ? 'text-food-purple hover:bg-food-yellow/20 hover:text-food-orange'
+                          : 'text-slate-400 hover:bg-slate-700 hover:text-white')
+                    }`}
+                    title="Copier tous les ingrédients"
+                  >
+                    {copied ? <CheckIcon className="h-5 w-5" /> : <ClipboardDocumentIcon className="h-5 w-5" />}
+                  </button>
+                </div>
+              </div>
               <div className="space-y-2">
                 {cocktail.ingredients.map((ingredient, idx) => (
                   <Ingredient
@@ -233,6 +331,7 @@ function CocktailModal({ cocktail, onClose }) {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -24,23 +24,30 @@ function CocktailsApp() {
   const [showShoppingList, setShowShoppingList] = useState(false);
 
   useEffect(() => {
-    setAllIngredients(cocktailService.getAllIngredients());
+    const fetchIngredients = async () => {
+      const ingredients = await cocktailService.getAllIngredients();
+      setAllIngredients(ingredients);
+    };
+    fetchIngredients();
   }, []);
 
   useEffect(() => {
     // Save to localStorage
     localStorage.setItem('myBar', JSON.stringify(selectedIngredients));
 
-    if (selectedIngredients.length === 0) {
-      setAvailableCocktails([]);
-      setCocktailsToBuy([]);
-      setHasSearched(false);
-    } else {
-      const { available, needToBuy } = cocktailService.categorizeCocktails(selectedIngredients);
-      setAvailableCocktails(available);
-      setCocktailsToBuy(needToBuy);
-      setHasSearched(true);
-    }
+    const updateCocktails = async () => {
+      if (selectedIngredients.length === 0) {
+        setAvailableCocktails([]);
+        setCocktailsToBuy([]);
+        setHasSearched(false);
+      } else {
+        const { available, needToBuy } = await cocktailService.categorizeCocktails(selectedIngredients);
+        setAvailableCocktails(available);
+        setCocktailsToBuy(needToBuy);
+        setHasSearched(true);
+      }
+    };
+    updateCocktails();
   }, [selectedIngredients]);
 
   const handleAddIngredient = (ingredient) => {

@@ -8,10 +8,13 @@ import CocktailsApp from './pages/CocktailsApp';
 import FoodApp from './pages/FoodApp';
 import CocktailDetailsPage from './pages/CocktailDetailsPage';
 import AdminPage from './pages/AdminPage';
+import SubmitRecipePage from './pages/SubmitRecipePage';
 import Navbar from './components/navbar';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   return (
+    <ThemeProvider>
       <Router>
         <div>
           <Navbar />
@@ -23,13 +26,18 @@ function App() {
             <Route path="/cocktails" element={<CocktailsApp />} />
             <Route path="/food" element={<FoodApp />} />
             <Route path="/cocktail/:name" element={<CocktailDetailsPage />} />
+
+            {/* Public Submission Page */}
+            <Route path="/submit-recipe" element={<SubmitRecipePage />} />
+
+            {/* Protected Admin Pages */}
             <Route path="/admin/cocktails" element={<AdminPage mode="cocktail" />} />
             <Route path="/admin/food" element={<AdminPage mode="food" />} />
-            {/* Fallback for old link or direct access */}
             <Route path="/admin" element={<AdminPage mode="cocktail" />} />
           </Routes>
         </div>
       </Router>
+    </ThemeProvider>
   );
 }
 

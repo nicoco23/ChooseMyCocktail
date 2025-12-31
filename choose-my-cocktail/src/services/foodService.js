@@ -1,21 +1,23 @@
-import ingredientsData from '../JSON/FoodIngredients.json';
-
 const API_URL = 'http://localhost:3001/api/recipes';
 
 export const foodService = {
   /**
    * Récupère toutes les recettes depuis l'API
    */
-  getAllRecipes: async () => {
+  getAllRecipes: async (isAdmin = false) => {
     try {
-      const response = await fetch(API_URL);
+      const url = isAdmin ? `${API_URL}?admin=true` : API_URL;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       const json = await response.json();
       // Filter to keep only food recipes (exclude cocktails if any, though API serves all)
       // Assuming 'cocktail' category is for cocktails.
-      return json.data.filter(r => r.category !== 'cocktail');
+      // Map 'steps' from API to 'etapes' for frontend compatibility
+      return json.data
+        .filter(r => r.category !== 'cocktail' && r.category !== 'mocktail' && r.category !== 'smoothie')
+        .map(r => ({ ...r, etapes: r.steps || r.etapes }));
     } catch (error) {
       console.error("Failed to fetch recipes:", error);
       return [];
@@ -68,11 +70,27 @@ export const foodService = {
   },
 
   /**
-   * Récupère la liste unique de tous les ingrédients (Fichier maître + Recettes DB)
+   * Supprime une recette via l'API
+   */
+  deleteRecipe: async (id) => {
+    try {
+      const response = await fetch(`${API_URL}/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete recipe');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error deleting recipe:", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Récupère la liste unique de tous les ingrédients (API)
    */
   getAllIngredients: async () => {
-    const staticIngredients = ingredientsData.map(i => i.nom);
-
     try {
       const recipes = await foodService.getAllRecipes();
       const dynamicIngredients = new Set();
@@ -85,11 +103,10 @@ export const foodService = {
         }
       });
 
-      const all = new Set([...staticIngredients, ...dynamicIngredients]);
-      return Array.from(all).sort((a, b) => a.localeCompare(b));
+      return Array.from(dynamicIngredients).sort((a, b) => a.localeCompare(b));
     } catch (e) {
       console.error("Error fetching dynamic ingredients", e);
-      return staticIngredients.sort((a, b) => a.localeCompare(b));
+      return [];
     }
   },
 
@@ -97,44 +114,61 @@ export const foodService = {
    * Récupère le type d'un ingrédient
    */
   getIngredientType: (name) => {
-    const ingredient = ingredientsData.find(i => i.nom.toLowerCase() === name.toLowerCase());
-    return ingredient ? ingredient.type : 'autre';
+    return 'autre';
   },
 
   /**
    * Catégorise les recettes en fonction des ingrédients de l'utilisateur et de son équipement.
    * @param {string[]} userIngredients - Liste des ingrédients de l'utilisateur
    * @param {string[]} userEquipment - Liste des équipements de l'utilisateur (optionnel)
+   * @param {string[]} userTags - Liste des tags sélectionnés (optionnel)
    */
-  categorizeRecipes: async (userIngredients, userEquipment = []) => {
-    if (!userIngredients || userIngredients.length === 0) {
+  categorizeRecipes: async (userIngredients, userEquipment = [], userTags = []) => {
+    const hasIngredients = userIngredients && userIngredients.length > 0;
+    const hasTags = userTags && userTags.length > 0;
+    const hasEquipment = userEquipment && userEquipment.length > 0;
+
+    if (!hasIngredients && !hasTags && !hasEquipment) {
       return { available: [], needToBuy: [] };
     }
 
     const normalize = (value = '') => value.trim().toLowerCase();
-    const userIngredientsLower = userIngredients.map(normalize);
-    const userEquipmentLower = userEquipment.map(normalize);
+    const userIngredientsLower = (userIngredients || []).map(normalize);
+    const userEquipmentLower = (userEquipment || []).map(normalize);
 
     const available = [];
     const needToBuy = [];
 
     // Ingrédients de base supposés présents dans une cuisine
-    const commonIngredients = ['sel', 'poivre', 'eau', 'huile', 'huile d\'olive', 'sucre', 'farine', 'beurre'];
+    const commonIngredients = ['sel', 'poivre', 'eau', 'huile', 'huile d\'olive'];
 
     const allRecipes = await foodService.getAllRecipes();
 
     allRecipes.forEach(recipe => {
-      // 1. Check Equipment
-      if (recipe.equipment && recipe.equipment.length > 0) {
-        const missingEquipment = recipe.equipment.filter(eq => !userEquipmentLower.includes(normalize(eq)));
-        if (missingEquipment.length > 0) {
-          // Si l'équipement manque, on ne propose pas la recette (ou on pourrait la mettre dans une catégorie "Impossible")
-          // Pour l'instant, on l'ignore simplement.
-          return;
+      // 1. Check Tags (Filter if tags are selected)
+      if (hasTags) {
+        const recipeTags = recipe.tags || [];
+        const hasAllTags = userTags.every(tag => recipeTags.includes(tag));
+        if (!hasAllTags) return;
+      }
+
+      // 2. Check Equipment (Filter if equipment is selected)
+      // Si l'utilisateur a sélectionné des équipements, on veut voir les recettes qui utilisent ces équipements.
+      // Si l'utilisateur n'a rien sélectionné, on ignore ce filtre (on montre tout).
+      if (hasEquipment) {
+        if (recipe.equipment && recipe.equipment.length > 0) {
+           // On vérifie si la recette utilise au moins un des équipements sélectionnés
+           // (Logique de recherche "Contenant cet ustensile")
+           const usesSelectedEquipment = recipe.equipment.some(eq => userEquipmentLower.includes(normalize(eq)));
+           if (!usesSelectedEquipment) return;
+        } else {
+           // Si la recette n'a pas d'équipement et qu'on cherche par équipement, on l'exclut ?
+           // "Je veux des recettes au Four". Une salade n'a pas de four. On l'exclut.
+           return;
         }
       }
 
-      // 2. Check Ingredients
+      // 3. Check Ingredients
       const recipeIngredients = recipe.ingredients.map(i => normalize(i.nom));
 
       const missingIngredients = recipeIngredients.filter(ing => !userIngredientsLower.includes(ing));
@@ -148,14 +182,20 @@ export const foodService = {
       const enrichedRecipe = {
         ...recipe,
         missingIngredients: realMissingIngredients,
-        matchPercentage: Math.round((ownedCount / recipeIngredients.length) * 100)
+        matchPercentage: recipeIngredients.length > 0 ? Math.round((ownedCount / recipeIngredients.length) * 100) : 0
       };
 
-      if (ownedCount > 0) {
+      // Logique d'inclusion :
+      // Si on a filtré par Ingrédients, il faut au moins un match.
+      // Si on a filtré par Tags ou Equipement (sans ingrédients), on prend tout ce qui passe les filtres précédents.
+
+      const matchesIngredients = hasIngredients ? ownedCount > 0 : true;
+
+      if (matchesIngredients) {
         if (missingCount === 0) {
-          available.push(enrichedRecipe);
+            available.push(enrichedRecipe);
         } else {
-          needToBuy.push(enrichedRecipe);
+            needToBuy.push(enrichedRecipe);
         }
       }
     });

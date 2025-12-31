@@ -26,8 +26,19 @@ db.serialize(() => {
     equipment TEXT,
     glass TEXT,
     alcool INTEGER,
-    is_custom INTEGER DEFAULT 0
-  )`);
+    is_custom INTEGER DEFAULT 0,
+    validated INTEGER DEFAULT 0
+  )`, (err) => {
+    if (!err) {
+      // Try to add the column if table already exists (migration)
+      db.run(`ALTER TABLE recipes ADD COLUMN validated INTEGER DEFAULT 0`, (err) => {
+        // Ignore error if column already exists
+      });
+      db.run(`ALTER TABLE recipes ADD COLUMN tags TEXT`, (err) => {
+        // Ignore error if column already exists
+      });
+    }
+  });
 });
 
 module.exports = db;

@@ -9,8 +9,11 @@ function AllCocktailsPage() {
 
   useEffect(() => {
     // Utiliser le service pour récupérer les cocktails
-    const data = cocktailService.getAllCocktails();
-    setCocktails(data);
+    const fetchCocktails = async () => {
+      const data = await cocktailService.getAllCocktails();
+      setCocktails(data);
+    };
+    fetchCocktails();
   }, []);
 
   return (

@@ -13,18 +13,18 @@ module.exports = {
           purple: '#A17BB7',
         },
         hk: {
-          yellow: '#E6D18C',
-          green: {
-            dark: '#798E61',
-            light: '#9FB279',
+          yellow: '#FFE135',
+          blue: {
+            dark: '#0079D3',
+            light: '#82CFFD',
           },
           pink: {
-            light: '#D7ACA7',
-            pale: '#E6D2D0',
+            light: '#FFB7C5',
+            pale: '#FFF0F5',
           },
           red: {
-            dark: '#A13C36',
-            light: '#C1645B',
+            dark: '#C2185B',
+            light: '#FF1493',
           }
         }
       }
