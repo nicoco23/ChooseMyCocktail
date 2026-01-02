@@ -755,100 +755,118 @@ const sampleItems = [
     title: 'Pâtes Carbonara',
     kind: 'food',
     beverage_type: 'plat',
-    description: 'La vraie recette italienne avec guanciale et pecorino.',
+    description: 'La vraie recette italienne sans crème.',
     steps: [
-        { titre: 'Cuisson des pâtes', description: 'Cuire les spaghetti al dente dans de l\'eau bouillante salée.' },
-        { titre: 'Préparation de la sauce', description: 'Mélanger les oeufs et le pecorino râpé avec beaucoup de poivre.' },
-        { titre: 'Cuisson du guanciale', description: 'Faire revenir le guanciale coupé en lardons jusqu\'à ce qu\'il soit croustillant.' },
-        { titre: 'Assemblage', description: 'Mélanger les pâtes avec le guanciale, puis hors du feu ajouter le mélange oeufs/fromage et un peu d\'eau de cuisson pour créer une émulsion crémeuse.' }
+        { titre: 'Cuisson des pâtes', description: 'Faire cuire les pâtes al dente.' },
+        { titre: 'Préparation de la sauce', description: 'Mélanger les jaunes d\'oeufs et le pecorino.' },
+        { titre: 'Cuisson du guanciale', description: 'Faire revenir le guanciale (ou lardons) à la poêle.' },
+        { titre: 'Assemblage', description: 'Mélanger les pâtes avec le guanciale et la sauce hors du feu.' }
     ],
     ingredients: [
       { nom: 'Spaghetti', quantite: 200, unite: 'g' },
       { nom: 'Guanciale', quantite: 100, unite: 'g' },
-      { nom: 'Oeufs', quantite: 3, unite: 'pièce' },
+      { nom: 'Oeufs', quantite: 2, unite: 'jaunes' },
       { nom: 'Pecorino', quantite: 50, unite: 'g' }
     ],
-    tags: ['gras', 'riche', 'salé', 'savoureux', 'Pâtes', 'Viande', 'Fromage', 'Traditionnel', 'Gourmand'],
-    equipment: ['Casserole', 'Poêle', 'Bol'],
-    profile: { creaminess: 5, body: 5, saltiness: 4 },
+    tags: ['riche', 'salé', 'umami', 'Pâtes', 'Viande', 'Fromage'],
+    equipment: ['Casserole', 'Poêle'],
+    profile: { creaminess: 5, saltiness: 4, body: 5 },
     validated: 1
   },
   {
-    title: 'Tacos Épicés',
-    kind: 'food',
-    beverage_type: 'plat',
-    description: 'Tacos au boeuf épicé et salsa.',
-    ingredients: [
-      { nom: 'Tortillas', quantite: 3, unite: 'pièce' },
-      { nom: 'Boeuf haché', quantite: 150, unite: 'g' },
-      { nom: 'Piment', quantite: 1, unite: 'pièce' },
-      { nom: 'Salsa', quantite: 50, unite: 'g' }
-    ],
-    tags: ['épicé', 'savoureux', 'mexicain', 'Viande', 'Épicé', 'Mexicain'],
-    equipment: ['Poêle'],
-    profile: { spice_heat: 5, body: 3 },
-    validated: 1
-  },
-  {
-    title: 'Fondant au chocolat',
+    title: 'Tiramisu',
     kind: 'food',
     beverage_type: 'dessert',
-    description: 'Coeur coulant au chocolat noir.',
-    ingredients: [
-      { nom: 'Chocolat noir', quantite: 200, unite: 'g' },
-      { nom: 'Beurre', quantite: 150, unite: 'g' },
-      { nom: 'Sucre', quantite: 100, unite: 'g' },
-      { nom: 'Oeufs', quantite: 4, unite: 'pièce' }
+    description: 'Le dessert italien au café.',
+    steps: [
+        { titre: 'Préparation de la crème', description: 'Mélanger les jaunes d\'oeufs et le sucre, puis ajouter le mascarpone.' },
+        { titre: 'Montage des blancs', description: 'Monter les blancs en neige et les incorporer délicatement.' },
+        { titre: 'Trempage', description: 'Tremper les biscuits dans le café.' },
+        { titre: 'Montage', description: 'Alterner couches de biscuits et de crème.' }
     ],
-    tags: ['sucré', 'chocolaté', 'dessert', 'riche', 'Dessert', 'Chocolat', 'Gourmand', 'Sucré'],
-    equipment: ['Four', 'Bol', 'Fouet'],
-    profile: { sweetness: 5, body: 4, bitterness: 2 },
+    ingredients: [
+      { nom: 'Mascarpone', quantite: 250, unite: 'g' },
+      { nom: 'Oeufs', quantite: 3, unite: 'unité' },
+      { nom: 'Sucre', quantite: 50, unite: 'g' },
+      { nom: 'Café', quantite: 1, unite: 'tasse' },
+      { nom: 'Biscuits à la cuillère', quantite: 12, unite: 'unité' }
+    ],
+    tags: ['sucré', 'crémeux', 'café', 'Dessert'],
+    equipment: ['Saladier', 'Batteur électrique'],
+    profile: { sweetness: 4, creaminess: 5, body: 4 },
+    validated: 1
+  },
+  {
+    title: 'Burger Maison',
+    kind: 'food',
+    beverage_type: 'plat',
+    description: 'Un bon burger juteux.',
+    steps: [
+        { titre: 'Cuisson de la viande', description: 'Faire cuire le steak haché à la poêle.' },
+        { titre: 'Préparation des pains', description: 'Toaster les pains à burger.' },
+        { titre: 'Assemblage', description: 'Monter le burger avec la sauce, la salade, la tomate, la viande et le fromage.' }
+    ],
+    ingredients: [
+      { nom: 'Pain à burger', quantite: 1, unite: 'unité' },
+      { nom: 'Steak haché', quantite: 1, unite: 'unité' },
+      { nom: 'Cheddar', quantite: 1, unite: 'tranche' },
+      { nom: 'Tomate', quantite: 1, unite: 'tranche' },
+      { nom: 'Salade', quantite: 1, unite: 'feuille' }
+    ],
+    tags: ['riche', 'salé', 'viande', 'Fast Food'],
+    equipment: ['Poêle'],
+    profile: { saltiness: 3, body: 5, creaminess: 3 },
     validated: 1
   }
 ];
 
-async function upsertIngredient(rawName) {
-  const normalized = normalizeIngredient(rawName) || rawName.toLowerCase().trim();
-  await db.run(`INSERT OR IGNORE INTO ingredients (name, normalized_name) VALUES (?, ?)`, [normalized, normalized]);
-  const row = await db.get(`SELECT id FROM ingredients WHERE normalized_name = ?`, [normalized]);
-  return row ? row.id : null;
+async function upsertIngredient(name) {
+  if (!name) return null;
+  const normalized = normalizeIngredient(name);
+
+  // Check if exists
+  const existing = await db.get('SELECT id FROM ingredients WHERE normalized_name = ?', [normalized]);
+  if (existing) return existing.id;
+
+  // Insert
+  const result = await db.run('INSERT INTO ingredients (name, normalized_name) VALUES (?, ?)', [name, normalized]);
+  return result.lastID;
 }
 
-async function upsertTag(rawName) {
-  const normalized = rawName.toLowerCase().trim();
-  await db.run(`INSERT OR IGNORE INTO tags (name) VALUES (?)`, [normalized]);
-  const row = await db.get(`SELECT id FROM tags WHERE name = ?`, [normalized]);
-  return row ? row.id : null;
+async function upsertTag(name) {
+  if (!name) return null;
+  const row = await db.get('SELECT id FROM tags WHERE name = ?', [name]);
+  if (row) return row.id;
+  const res = await db.run('INSERT INTO tags (name) VALUES (?)', [name]);
+  return res.lastID;
 }
 
-async function upsertEquipment(rawName) {
-  const normalized = rawName.trim();
-  await db.run(`INSERT OR IGNORE INTO equipment (name) VALUES (?)`, [normalized]);
-  const row = await db.get(`SELECT id FROM equipment WHERE name = ?`, [normalized]);
-  return row ? row.id : null;
+async function upsertEquipment(name) {
+  if (!name) return null;
+  const row = await db.get('SELECT id FROM equipment WHERE name = ?', [name]);
+  if (row) return row.id;
+  const res = await db.run('INSERT INTO equipment (name) VALUES (?)', [name]);
+  return res.lastID;
 }
 
 async function seed() {
   try {
-    console.log('Starting seed...');
-    await db.run('PRAGMA foreign_keys = OFF');
-    await db.run('BEGIN TRANSACTION');
+    console.log('Starting safe seed (import)...');
 
-    // Clean existing data
-    await db.run('DELETE FROM item_ingredients');
-    await db.run('DELETE FROM item_tags');
-    await db.run('DELETE FROM item_equipment');
-    await db.run('DELETE FROM item_profiles');
-    await db.run('DELETE FROM items');
-    await db.run('DELETE FROM ingredients');
-    await db.run('DELETE FROM tags');
-    await db.run('DELETE FROM equipment');
+    // DO NOT DELETE EXISTING DATA
+    // await db.run('DELETE FROM ...');
 
-    await db.run('COMMIT');
-    await db.run('PRAGMA foreign_keys = ON');
-
-    await db.run('BEGIN TRANSACTION');
     for (const item of sampleItems) {
+      // Check if item exists
+      const existingItem = await db.get('SELECT id FROM items WHERE title = ?', [item.title]);
+
+      if (existingItem) {
+          console.log(`Skipping existing item: ${item.title}`);
+          continue;
+      }
+
+      console.log(`Importing new item: ${item.title}`);
+
       const now = new Date().toISOString();
       const insert = await db.run(
         `INSERT INTO items (kind, beverage_type, title, description, validated, created_at, updated_at)
@@ -913,16 +931,11 @@ async function seed() {
         ]);
       }
     }
-    await db.run('COMMIT');
-    console.log('Seed completed successfully with rich dataset.');
+
+    console.log('Safe seed completed successfully.');
     process.exit(0);
   } catch (error) {
     console.error('Seeding failed:', error);
-    try {
-      await db.run('ROLLBACK');
-    } catch (rollbackError) {
-      console.error('Rollback failed:', rollbackError);
-    }
     process.exit(1);
   }
 }

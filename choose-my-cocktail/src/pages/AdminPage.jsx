@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { cocktailService } from '../services/cocktailService';
 import { foodService } from '../services/foodService';
 import { useTheme } from '../context/ThemeContext';
-import { API_UPLOAD_URL } from '../config';
+import { API_UPLOAD_URL, API_BASE_URL } from '../config';
 
 const FRONT_ADMIN_TOKEN = process.env.REACT_APP_ADMIN_TOKEN || 'admin123';
 
@@ -16,7 +16,9 @@ function AdminPage({ mode = 'cocktail' }) {
   const [password, setPassword] = useState('');
   const [adminToken, setAdminToken] = useState('');
 
-  const units = ['g', 'kg', 'cl', 'ml', 'dl', 'l', 'c.à.c', 'c.à.s', 'pièce', 'Autre'];
+  const units = isFoodMode
+    ? ['g', 'kg', 'cl', 'ml', 'dl', 'l', 'c.à.c', 'c.à.s', 'pièce', 'Autre']
+    : ['cl', 'ml', 'oz', 'trait', 'zeste', 'tranche', 'feuille', 'pièce', 'c.à.c', 'c.à.s', 'Autre'];
 
   const [recipe, setRecipe] = useState({
     nom: '',
@@ -25,7 +27,7 @@ function AdminPage({ mode = 'cocktail' }) {
     cuisson: '',
     total: '',
     etapes: [{ titre: '', description: '' }],
-    ingredients: [{ nom: '', amount: '', unit: 'g' }],
+    ingredients: [{ nom: '', amount: '', unit: isFoodMode ? 'g' : 'cl' }],
     image: '',
     equipment: [],
     tags: [],
@@ -38,8 +40,51 @@ function AdminPage({ mode = 'cocktail' }) {
   const [, setUploading] = useState(false);
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'form'
 
-  const availableEquipment = ['Four', 'Plaques', 'Poêle', 'Casserole', 'Micro-ondes', 'Air Fryer', 'Robot Cuiseur', 'Barbecue', 'Friteuse', 'Mixeur'];
-  const availableTags = ['Viande', 'Poisson', 'Végétarien', 'Vegan', 'Sans Gluten', 'Soupe', 'Salade', 'Pâtes', 'Riz', 'Fruits de mer', 'Chocolat', 'Fruits', 'Fromage', 'Épicé', 'Rapide', 'Traditionnel', 'Sain', 'Gourmand'];
+  // Users state
+  const [users, setUsers] = useState([]);
+
+  const loadUsers = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
+        headers: { 'x-admin-token': adminToken }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setUsers(data.data || []);
+      }
+    } catch (error) {
+      console.error('Error loading users:', error);
+    }
+  }, [adminToken]);
+
+  const handleDeleteUser = async (id) => {
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) return;
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/users/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-token': adminToken }
+      });
+      if (response.ok) {
+        setUsers(users.filter(u => u.id !== id));
+      } else {
+        alert('Erreur lors de la suppression');
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  };
+
+  const availableEquipment = isFoodMode
+    ? ['Four', 'Plaques', 'Poêle', 'Casserole', 'Micro-ondes', 'Air Fryer', 'Robot Cuiseur', 'Barbecue', 'Friteuse', 'Mixeur']
+    : ['Shaker', 'Verre à mélange', 'Cuillère à mélange', 'Jigger', 'Passoire', 'Pilon', 'Blender', 'Presse-agrumes', 'Couteau', 'Planche à découper'];
+
+  const availableTags = isFoodMode
+    ? ['Viande', 'Poisson', 'Végétarien', 'Vegan', 'Sans Gluten', 'Soupe', 'Salade', 'Pâtes', 'Riz', 'Fruits de mer', 'Chocolat', 'Fruits', 'Fromage', 'Épicé', 'Rapide', 'Traditionnel', 'Sain', 'Gourmand']
+    : ['Amer', 'Sucré', 'Acide', 'Fruité', 'Épicé', 'Fort', 'Léger', 'Sans alcool', 'Classique', 'Moderne', 'Été', 'Hiver', 'Pétillant', 'Crémeux'];
+
+  const categories = isFoodMode
+    ? ['entrée', 'plat', 'dessert']
+    : ['cocktail', 'mocktail', 'smoothie', 'shot', 'punch'];
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -59,9 +104,13 @@ function AdminPage({ mode = 'cocktail' }) {
 
   useEffect(() => {
     if (isAuthenticated) {
+      if (mode === 'users') {
+        loadUsers();
+      } else {
         loadRecipes();
+      }
     }
-  }, [isAuthenticated, loadRecipes, service]);
+  }, [isAuthenticated, loadRecipes, loadUsers, mode, service]);
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
@@ -254,11 +303,6 @@ function AdminPage({ mode = 'cocktail' }) {
   };
 
   const saveToDB = async () => {
-    if (!isFoodMode) {
-      alert("La sauvegarde en base de données n'est disponible que pour la cuisine pour le moment.");
-      return;
-    }
-
     if (!recipe.nom.trim()) {
       alert('Le nom de la recette est obligatoire.');
       return;
@@ -279,7 +323,8 @@ function AdminPage({ mode = 'cocktail' }) {
     const finalRecipe = {
       ...recipe,
       id: editingId,
-      type: 'food',
+      kind: isFoodMode ? 'food' : 'beverage',
+      beverage_type: isFoodMode ? null : recipe.category,
       etapes: validSteps,
       ingredients: validIngredients.map(ing => {
         const base = { nom: ing.nom };
@@ -315,7 +360,7 @@ function AdminPage({ mode = 'cocktail' }) {
     if (isFoodMode) {
       return "min-h-screen bg-food-yellow/10 text-food-dark p-8";
     }
-    return "min-h-screen bg-slate-900 text-slate-100 p-8";
+    return "min-h-screen bg-gray-50 text-gray-900 p-8";
   };
   const getCardClasses = () => {
     if (theme === 'kitty') {
@@ -324,7 +369,7 @@ function AdminPage({ mode = 'cocktail' }) {
     if (isFoodMode) {
       return "max-w-4xl mx-auto bg-white border border-food-purple/10 p-6 rounded-xl shadow-xl";
     }
-    return "max-w-4xl mx-auto bg-slate-800 p-6 rounded-xl shadow-xl";
+    return "max-w-4xl mx-auto bg-white border border-gray-200 p-6 rounded-xl shadow-xl";
   };
   const getButtonPrimaryClasses = () => {
     if (theme === 'kitty') {
@@ -342,7 +387,7 @@ function AdminPage({ mode = 'cocktail' }) {
     if (isFoodMode) {
       return "w-full bg-white border border-food-purple/20 rounded p-2 focus:ring-2 focus:ring-food-orange outline-none text-food-dark placeholder-food-dark/30";
     }
-    return "w-full bg-slate-700 border border-slate-600 rounded p-2 focus:ring-2 focus:ring-amber-500 outline-none";
+    return "w-full bg-white border border-gray-300 rounded p-2 focus:ring-2 focus:ring-amber-500 outline-none text-gray-900";
   };
 
   if (!isAuthenticated) {
@@ -374,10 +419,58 @@ function AdminPage({ mode = 'cocktail' }) {
     <div className={getContainerClasses()}>
       <div className={getCardClasses()}>
         <h1 className="text-3xl font-bold mb-6 text-center">
-          {isFoodMode ? 'Administration Cuisine' : 'Ajouter un Cocktail'}
+          {mode === 'users' ? 'Gestion des Utilisateurs' : (isFoodMode ? 'Administration Cuisine' : 'Administration Cocktails')}
         </h1>
 
-        {isFoodMode && viewMode === 'list' && (
+        {mode === 'users' && (
+          <div className="space-y-6">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className={theme === 'kitty' ? 'bg-hk-pink-pale/50 text-hk-red-dark' : 'bg-gray-50 text-gray-500'}>
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Nom</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Email</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Provider</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Vérifié</th>
+                    <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {users.map((u) => (
+                    <tr key={u.id} className={theme === 'kitty' ? "hover:bg-hk-pink-light/10 text-hk-red-dark" : "hover:bg-black/5 text-gray-900"}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">{u.id}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">{u.name}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">{u.email}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">{u.provider}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {u.email_verified ? (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                            Oui
+                          </span>
+                        ) : (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                            Non
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button
+                          onClick={() => handleDeleteUser(u.id)}
+                          className={theme === 'kitty' ? "text-hk-red-hot hover:text-hk-red-hot/80" : "text-red-600 hover:text-red-900"}
+                        >
+                          Supprimer
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {mode !== 'users' && viewMode === 'list' && (
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <h2 className={`text-xl font-bold ${theme === 'kitty' ? 'text-hk-red-light' : 'text-food-orange'}`}>Liste des Recettes</h2>
@@ -445,20 +538,19 @@ function AdminPage({ mode = 'cocktail' }) {
           </div>
         )}
 
-        {(viewMode === 'form' || !isFoodMode) && (
+        {mode !== 'users' && viewMode === 'form' && (
         <>
         <div className="flex justify-between items-center mb-6">
-            <h2 className={`text-xl font-bold ${theme === 'kitty' ? 'text-hk-red-light' : 'text-food-orange'}`}>
+            <h2 className={`text-xl font-bold ${theme === 'kitty' ? 'text-hk-red-light' : isFoodMode ? 'text-food-orange' : 'text-amber-600'}`}>
                 {editingId ? 'Modifier la recette' : 'Nouvelle recette'}
             </h2>
-            {isFoodMode && (
-                <button
-                    onClick={() => setViewMode('list')}
-                    className="text-sm underline opacity-70 hover:opacity-100"
-                >
-                    Retour à la liste
-                </button>
-            )}
+            {/* Back button for both modes now */}
+            <button
+                onClick={() => setViewMode('list')}
+                className="text-sm underline opacity-70 hover:opacity-100"
+            >
+                Retour à la liste
+            </button>
         </div>
 
         <div className="space-y-4">
@@ -482,10 +574,9 @@ function AdminPage({ mode = 'cocktail' }) {
               onChange={handleInputChange}
               className={getInputClasses()}
             >
-                <option value="entrée">Entrée</option>
-                <option value="plat">Plat</option>
-                <option value="dessert">Dessert</option>
-                <option value="apéritif">Apéritif</option>
+                {categories.map(cat => (
+                    <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+                ))}
             </select>
           </div>
 

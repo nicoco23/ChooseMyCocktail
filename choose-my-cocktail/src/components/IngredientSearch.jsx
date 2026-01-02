@@ -24,41 +24,41 @@ export default function IngredientSearch({ allIngredients, selectedIngredients, 
   const getThemeClasses = () => {
     if (theme === 'kitty') {
       return {
-        container: "bg-hk-pink-pale border-hk-pink-light focus-within:border-hk-red-light focus-within:ring-1 focus-within:ring-hk-red-light",
-        input: "text-hk-red-dark placeholder-hk-red-light/50",
-        icon: "text-hk-blue-light",
-        button: "text-hk-blue-light hover:text-hk-blue-dark",
-        optionsBg: "bg-hk-pink-pale border-hk-pink-light",
-        optionActive: "bg-hk-red-light text-white",
-        optionInactive: "text-hk-red-dark",
-        tag: "bg-hk-blue-light border-hk-blue-dark text-white",
-        tagRemove: "text-white/70 hover:bg-hk-red-dark hover:text-white"
+        container: "bg-white/90 backdrop-blur-sm border-2 border-hk-pink-light focus-within:border-hk-pink-hot focus-within:ring-4 focus-within:ring-hk-pink-pale rounded-[2rem] shadow-[0_5px_15px_rgba(255,105,180,0.2)]",
+        input: "text-hk-red-dark placeholder-hk-red-light/70 font-display font-medium",
+        icon: "text-hk-pink-hot",
+        button: "text-hk-pink-hot hover:text-hk-red-dark bg-hk-pink-pale/50 rounded-full p-1 m-1",
+        optionsBg: "bg-white/95 backdrop-blur-xl border-2 border-hk-pink-light rounded-2xl mt-2",
+        optionActive: "bg-hk-pink-pale text-hk-red-dark font-bold",
+        optionInactive: "text-hk-red-dark hover:bg-hk-pink-pale/30",
+        tag: "bg-hk-pink-hot text-white border-2 border-white shadow-md rounded-full px-3 py-1 font-bold",
+        tagRemove: "text-white/80 hover:text-white hover:bg-white/20 rounded-full p-0.5 ml-1"
       };
     }
     if (theme === 'creme' || isFoodContext) {
        return {
-        container: "bg-white border-food-purple/20 focus-within:border-food-orange focus-within:ring-1 focus-within:ring-food-orange",
-        input: "text-food-dark placeholder-food-dark/40",
-        icon: "text-food-purple",
+        container: "bg-white border-food-purple/20 focus-within:border-food-orange focus-within:ring-4 focus-within:ring-food-orange/10 rounded-2xl shadow-lg",
+        input: "text-food-dark placeholder-food-dark/40 font-medium",
+        icon: "text-food-orange",
         button: "text-food-purple hover:text-food-orange",
-        optionsBg: "bg-white border-food-purple/10",
+        optionsBg: "bg-white border-food-purple/10 rounded-xl mt-2 shadow-xl",
         optionActive: "bg-food-orange text-white",
-        optionInactive: "text-food-dark",
-        tag: "bg-food-yellow/20 border-food-purple/20 text-food-dark",
-        tagRemove: "text-food-dark/50 hover:bg-food-orange hover:text-white"
+        optionInactive: "text-food-dark hover:bg-food-yellow/10",
+        tag: "bg-food-purple text-white border border-food-purple/20 rounded-full px-3 py-1 shadow-sm",
+        tagRemove: "text-white/70 hover:text-white hover:bg-white/20 rounded-full ml-1"
       };
     }
     // Default Dark
     return {
-        container: "bg-slate-900 border-slate-600 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500",
+        container: "bg-slate-900 border-slate-700 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 rounded-xl shadow-lg",
         input: "text-slate-100 placeholder-slate-500",
-        icon: "text-slate-400",
+        icon: "text-amber-500",
         button: "text-slate-400 hover:text-amber-500",
-        optionsBg: "bg-slate-800 border-slate-700",
-        optionActive: "bg-amber-500 text-white",
-        optionInactive: "text-slate-300",
-        tag: "bg-slate-700 border-slate-600 text-slate-200",
-        tagRemove: "text-slate-400 hover:bg-rose-500 hover:text-white"
+        optionsBg: "bg-slate-800 border-slate-700 rounded-xl mt-2 shadow-xl",
+        optionActive: "bg-amber-600 text-white",
+        optionInactive: "text-slate-300 hover:bg-slate-700",
+        tag: "bg-slate-800 border border-slate-600 text-amber-500 rounded-full px-3 py-1",
+        tagRemove: "text-slate-500 hover:text-rose-500 ml-1"
     };
   };
 
@@ -69,12 +69,12 @@ export default function IngredientSearch({ allIngredients, selectedIngredients, 
       {/* Search Bar */}
       <Combobox value={null} onChange={handleSelect}>
         <div className="relative mt-1">
-          <div className={`relative w-full cursor-default overflow-hidden rounded-xl text-left shadow-lg border transition-all duration-200 ${classes.container}`}>
+          <div className={`relative w-full cursor-default rounded-xl text-left shadow-lg border transition-all duration-200 ${classes.container}`}>
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <MagnifyingGlassIcon className={`h-5 w-5 ${classes.icon}`} aria-hidden="true" />
             </div>
             <Combobox.Input
-              className={`w-full border-none py-4 pl-10 pr-10 text-lg leading-5 bg-transparent focus:ring-0 outline-none ${classes.input}`}
+              className={`w-full border-none py-4 pl-12 pr-12 text-lg leading-5 bg-transparent focus:ring-0 outline-none ${classes.input}`}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Rechercher un ingrédient (ex: Menthe, Rhum, Citron...)"
               displayValue={() => query}

@@ -2,17 +2,59 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const passport = require('passport');
+const session = require('express-session');
+require('dotenv').config();
 
 const itemRepository = require('./repositories/itemRepository');
 const pairingEngine = require('./services/pairingEngine');
+const AuthDatabase = require('./authDatabase');
+const configurePassport = require('./config/passport');
+const { authenticateJWT } = require('./middleware/auth');
+const createAuthRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'admin123';
 
-app.use(cors());
+console.log('--- Server Starting ---'); // Force restart log
+
+// Initialize Auth Database
+// Ensure we use the database in the server directory, regardless of where the process was started
+const dbPath = process.env.DB_PATH
+  ? (path.isAbsolute(process.env.DB_PATH) ? process.env.DB_PATH : path.join(__dirname, process.env.DB_PATH))
+  : path.join(__dirname, 'choosemycocktail.db');
+
+const authDb = new AuthDatabase(dbPath);
+authDb.initialize().catch(err => console.error('Failed to initialize auth database:', err));
+
+// Configure Passport
+configurePassport(authDb);
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Session middleware (pour OAuth)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 24 * 60 * 60 * 1000 // 24 heures
+  }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Auth routes
+app.use('/api/auth', createAuthRoutes(authDb));
 
 // Multer configuration
 const storage = multer.diskStorage({
@@ -89,8 +131,12 @@ app.get('/api/recipes/:id', async (req, res) => {
 });
 
 // Create recipe/item
-app.post('/api/recipes', requireAdmin, async (req, res) => {
+app.post('/api/recipes', async (req, res) => {
     try {
+        // Check for admin token manually to set validated status
+        const token = req.headers['x-admin-token'];
+        const isAdmin = token === ADMIN_TOKEN;
+
         const { name, nom, category, type, kind, beverage_type, ...rest } = req.body;
 
         // Determine kind and beverage_type
@@ -101,7 +147,7 @@ app.post('/api/recipes', requireAdmin, async (req, res) => {
         if (!itemKind) {
             // Infer from category
             const cat = (category || type || '').toLowerCase();
-            if (['cocktail', 'mocktail', 'smoothie', 'wine', 'juice'].includes(cat)) {
+            if (['cocktail', 'mocktail', 'smoothie', 'shot', 'punch', 'wine', 'juice'].includes(cat)) {
                 itemKind = 'beverage';
                 itemBeverageType = cat;
             } else {
@@ -121,7 +167,7 @@ app.post('/api/recipes', requireAdmin, async (req, res) => {
             cooking_time: rest.cooking_time || 0,
             total_time: rest.total_time || 0,
             glass: rest.glass || null,
-            validated: rest.validated ? 1 : 0,
+            validated: isAdmin ? (rest.validated ? 1 : 0) : 0,
             ingredients: rest.ingredients || [],
             steps: rest.steps || rest.etapes || [],
             tags: rest.tags || [],
@@ -147,7 +193,7 @@ app.put('/api/recipes/:id', requireAdmin, async (req, res) => {
 
         if (!itemKind) {
             const cat = (category || type || '').toLowerCase();
-            if (['cocktail', 'mocktail', 'smoothie', 'wine', 'juice'].includes(cat)) {
+            if (['cocktail', 'mocktail', 'smoothie', 'shot', 'punch', 'wine', 'juice'].includes(cat)) {
                 itemKind = 'beverage';
                 itemBeverageType = cat;
             } else {
@@ -196,7 +242,8 @@ app.delete('/api/recipes/:id', requireAdmin, async (req, res) => {
 // Get all ingredients
 app.get('/api/ingredients', async (req, res) => {
     try {
-        const ingredients = await itemRepository.getAllIngredients();
+        const { kind } = req.query;
+        const ingredients = await itemRepository.getAllIngredients(kind);
         res.json({ data: ingredients });
     } catch (error) {
         console.error('Error fetching ingredients:', error);
@@ -260,6 +307,74 @@ app.post('/api/pairings/feedback', async (req, res) => {
         res.json({ message: 'success', eventId });
     } catch (error) {
         console.error('Error recording feedback:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// User Favorites & Ratings
+app.post('/api/favorites/:itemId', authenticateJWT, async (req, res) => {
+    try {
+        const result = await itemRepository.toggleFavorite(req.user.id, req.params.itemId);
+        res.json(result);
+    } catch (error) {
+        console.error('Error toggling favorite:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/favorites', authenticateJWT, async (req, res) => {
+    try {
+        const favorites = await itemRepository.getFavorites(req.user.id);
+        res.json({ data: favorites });
+    } catch (error) {
+        console.error('Error fetching favorites:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/ratings/:itemId', authenticateJWT, async (req, res) => {
+    try {
+        const { rating, comment, kind } = req.body;
+        if (!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Invalid rating' });
+        }
+        // Note: kind is not currently used in the DB but could be useful for analytics or validation
+        await itemRepository.setRating(req.user.id, req.params.itemId, rating, comment);
+        res.json({ message: 'success' });
+    } catch (error) {
+        console.error('Error setting rating:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/ratings', authenticateJWT, async (req, res) => {
+    try {
+        const ratings = await itemRepository.getUserRatings(req.user.id);
+        res.json({ data: ratings });
+    } catch (error) {
+        console.error('Error fetching ratings:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Admin: Get all users
+app.get('/api/users', requireAdmin, async (req, res) => {
+    try {
+        const users = await authDb.getAllUsers();
+        res.json({ message: 'success', data: users });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Admin: Delete user
+app.delete('/api/users/:id', requireAdmin, async (req, res) => {
+    try {
+        await authDb.deleteUser(req.params.id);
+        res.json({ message: 'deleted' });
+    } catch (error) {
+        console.error('Error deleting user:', error);
         res.status(500).json({ error: error.message });
     }
 });

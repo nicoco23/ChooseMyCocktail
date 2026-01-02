@@ -3,23 +3,27 @@ import { Link } from 'react-router-dom';
 import { Combobox } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon, PlusIcon, TrashIcon, PhotoIcon, ClockIcon, FireIcon } from '@heroicons/react/24/outline';
 import { foodService } from '../services/foodService';
+import { cocktailService } from '../services/cocktailService';
 import { useTheme } from '../context/ThemeContext';
 import { API_UPLOAD_URL } from '../config';
 
-function SubmitRecipePage() {
+function SubmitRecipePage({ mode = 'food' }) {
   const { theme } = useTheme();
-  const service = foodService;
+  const isFoodMode = mode === 'food';
+  const service = isFoodMode ? foodService : cocktailService;
 
-  const units = ['g', 'kg', 'cl', 'ml', 'dl', 'l', 'c.à.c', 'c.à.s', 'pièce', 'tranche', 'pincée', 'Autre'];
+  const units = isFoodMode
+    ? ['g', 'kg', 'cl', 'ml', 'dl', 'l', 'c.à.c', 'c.à.s', 'pièce', 'tranche', 'pincée', 'Autre']
+    : ['cl', 'ml', 'oz', 'trait', 'zeste', 'tranche', 'feuille', 'pièce', 'c.à.c', 'c.à.s', 'Autre'];
 
   const [recipe, setRecipe] = useState({
     nom: '',
-    category: 'plat',
+    category: isFoodMode ? 'plat' : 'cocktail',
     preparation: '',
     cuisson: '',
     total: '',
     etapes: [{ titre: '', description: '' }],
-    ingredients: [{ nom: '', amount: '', unit: 'g' }],
+    ingredients: [{ nom: '', amount: '', unit: isFoodMode ? 'g' : 'cl' }],
     image: '',
     equipment: [],
     tags: []
@@ -30,8 +34,17 @@ function SubmitRecipePage() {
   const [uploading, setUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const availableEquipment = ['Four', 'Plaques', 'Poêle', 'Casserole', 'Micro-ondes', 'Air Fryer', 'Robot Cuiseur', 'Barbecue', 'Friteuse', 'Mixeur', 'Batteur', 'Moule à gâteau'];
-  const availableTags = ['Viande', 'Poisson', 'Végétarien', 'Vegan', 'Sans Gluten', 'Soupe', 'Salade', 'Pâtes', 'Riz', 'Fruits de mer', 'Chocolat', 'Fruits', 'Fromage', 'Épicé', 'Rapide', 'Traditionnel', 'Sain', 'Gourmand'];
+  const availableEquipment = isFoodMode
+    ? ['Four', 'Plaques', 'Poêle', 'Casserole', 'Micro-ondes', 'Air Fryer', 'Robot Cuiseur', 'Barbecue', 'Friteuse', 'Mixeur', 'Batteur', 'Moule à gâteau']
+    : ['Shaker', 'Verre à mélange', 'Cuillère à mélange', 'Jigger', 'Passoire', 'Pilon', 'Blender', 'Presse-agrumes', 'Couteau', 'Planche à découper'];
+
+  const availableTags = isFoodMode
+    ? ['Viande', 'Poisson', 'Végétarien', 'Vegan', 'Sans Gluten', 'Soupe', 'Salade', 'Pâtes', 'Riz', 'Fruits de mer', 'Chocolat', 'Fruits', 'Fromage', 'Épicé', 'Rapide', 'Traditionnel', 'Sain', 'Gourmand']
+    : ['Amer', 'Sucré', 'Acide', 'Fruité', 'Épicé', 'Fort', 'Léger', 'Sans alcool', 'Classique', 'Moderne', 'Été', 'Hiver', 'Pétillant', 'Crémeux', 'Milk-Shake'];
+
+  const categories = isFoodMode
+    ? ['entrée', 'plat', 'dessert']
+    : ['cocktail', 'mocktail', 'smoothie', 'shot', 'punch', 'milk-shake'];
 
   useEffect(() => {
     const loadIngredients = async () => {
@@ -189,7 +202,8 @@ function SubmitRecipePage() {
 
     const finalRecipe = {
       ...recipe,
-      type: 'food',
+      kind: isFoodMode ? 'food' : 'beverage',
+      beverage_type: isFoodMode ? null : recipe.category,
       etapes: validSteps,
       ingredients: validIngredients.map(ing => ({
         nom: ing.nom,
@@ -230,60 +244,64 @@ function SubmitRecipePage() {
 
   const styles = {
     container: isKitty
-      ? "min-h-screen bg-hk-pink-pale text-hk-red-dark p-4 md:p-8 font-display bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"
+      ? "min-h-screen bg-hk-pink-pale text-hk-red-dark p-4 md:p-8 font-display bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMjAnIGhlaWdodD0nMTIwJyB2aWV3Qm94PScwIDAgMTIwIDEyMCc+PHRleHQgeD0nMzAnIHk9JzMwJyBmb250LXNpemU9JzMwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjM1ZW0nPvCfjoA8L3RleHQ+PHRleHQgeD0nOTAnIHk9JzkwJyBmb250LXNpemU9JzMwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjM1ZW0nPvCfjoA8L3RleHQ+PC9zdmc+')]"
       : "min-h-screen bg-gradient-to-br from-food-yellow/20 to-white text-food-dark p-4 md:p-8",
 
     card: isKitty
-      ? "max-w-5xl mx-auto bg-white/90 backdrop-blur-sm border-2 border-hk-pink-hot rounded-3xl shadow-[0_0_15px_rgba(255,105,180,0.3)] overflow-hidden"
+      ? "max-w-5xl mx-auto bg-white/95 backdrop-blur-md border-4 border-hk-pink-light rounded-[2.5rem] shadow-[0_10px_40px_rgba(255,105,180,0.4)] overflow-hidden ring-4 ring-white/50"
       : "max-w-5xl mx-auto bg-white/90 backdrop-blur-sm border border-food-purple/10 rounded-3xl shadow-xl overflow-hidden",
 
     header: isKitty
-      ? "bg-gradient-to-r from-hk-red-light to-hk-red-dark p-8 text-white text-center"
+      ? "bg-gradient-to-b from-hk-pink-hot to-hk-red-light p-10 text-white text-center relative"
       : "bg-gradient-to-r from-food-orange to-food-purple p-8 text-white text-center",
 
     sectionTitle: isKitty
-      ? "text-xl font-bold text-hk-red-dark mb-4 flex items-center gap-2"
+      ? "text-2xl font-bold text-hk-red-dark mb-6 flex items-center gap-3 bg-hk-pink-pale/50 p-3 rounded-2xl inline-flex"
       : "text-xl font-bold text-food-orange mb-4 flex items-center gap-2",
 
     input: isKitty
-      ? "w-full bg-white border border-hk-pink-light/30 rounded-xl px-4 py-3 focus:ring-2 focus:ring-hk-red-light focus:border-transparent outline-none transition-all placeholder-hk-red-dark/30"
+      ? "w-full bg-white border-2 border-hk-pink-light/40 rounded-2xl px-5 py-3 focus:ring-4 focus:ring-hk-pink-light/30 focus:border-hk-pink-hot outline-none transition-all placeholder-hk-pink-light text-hk-red-dark font-medium"
       : "w-full bg-white border border-food-purple/20 rounded-xl px-4 py-3 focus:ring-2 focus:ring-food-orange focus:border-transparent outline-none transition-all placeholder-food-dark/30",
 
     label: isKitty
-      ? "block text-sm font-bold mb-2 text-hk-red-dark/80 ml-1"
+      ? "block text-sm font-bold mb-2 text-hk-red-dark ml-2 uppercase tracking-wide"
       : "block text-sm font-bold mb-2 text-food-dark/80 ml-1",
 
     buttonPrimary: isKitty
-      ? "bg-hk-red-light hover:bg-hk-red-dark text-white font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-hk-red-light/30 flex items-center justify-center gap-2"
+      ? "bg-gradient-to-r from-hk-pink-hot to-hk-red-light hover:from-hk-red-light hover:to-hk-red-dark text-white font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 shadow-xl shadow-hk-pink-hot/40 flex items-center justify-center gap-3 border-4 border-white/20"
       : "bg-gradient-to-r from-food-orange to-food-purple hover:opacity-90 text-white font-bold py-4 px-8 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg shadow-food-purple/30 flex items-center justify-center gap-2",
 
     buttonSecondary: isKitty
-      ? "border-2 border-dashed border-hk-pink-light/50 text-hk-red-light hover:bg-hk-pink-pale hover:border-hk-red-light rounded-xl py-3 px-4 transition-all font-medium flex items-center justify-center gap-2 w-full"
+      ? "border-2 border-dashed border-hk-pink-light text-hk-red-light hover:bg-hk-pink-pale hover:border-hk-pink-hot rounded-2xl py-3 px-4 transition-all font-bold flex items-center justify-center gap-2 w-full hover:scale-[1.01]"
       : "border-2 border-dashed border-food-purple/30 text-food-purple hover:bg-food-yellow/10 hover:border-food-orange rounded-xl py-3 px-4 transition-all font-medium flex items-center justify-center gap-2 w-full",
 
     stepBox: isKitty
-      ? "group relative bg-white border border-hk-pink-light/20 rounded-2xl p-6 hover:shadow-md transition-all hover:border-hk-pink-light/50"
+      ? "group relative bg-white border-2 border-hk-pink-light/30 rounded-3xl p-6 hover:shadow-lg transition-all hover:border-hk-pink-hot/50 hover:-translate-y-1"
       : "group relative bg-white border border-food-purple/10 rounded-2xl p-6 hover:shadow-md transition-all hover:border-food-orange/30",
 
     ingredientRow: isKitty
-      ? "flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-hk-pink-pale/20 p-3 rounded-xl border border-transparent hover:border-hk-pink-light/30 transition-colors"
+      ? "flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-hk-pink-pale/30 p-3 rounded-2xl border border-hk-pink-light/20 hover:border-hk-pink-hot/30 transition-all hover:bg-hk-pink-pale/50"
       : "flex flex-col sm:flex-row gap-3 items-start sm:items-center bg-food-yellow/5 p-3 rounded-xl border border-transparent hover:border-food-orange/20 transition-colors",
   };
 
   if (submitted) {
     return (
       <div className={styles.container}>
-        <div className="max-w-2xl mx-auto text-center bg-white p-12 rounded-3xl shadow-2xl">
-          <div className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6">
-            <CheckIcon className="w-10 h-10 text-green-600" />
+        <div className={`max-w-2xl mx-auto text-center bg-white p-12 rounded-3xl shadow-2xl ${isKitty ? 'border-4 border-hk-pink-light' : ''}`}>
+          <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6 ${isKitty ? 'bg-hk-pink-pale' : 'bg-green-100'}`}>
+            {isKitty ? <span className="text-4xl">💖</span> : <CheckIcon className="w-10 h-10 text-green-600" />}
           </div>
-          <h2 className="text-3xl font-bold mb-4 text-gray-800">Miam ! C'est envoyé !</h2>
-          <p className="mb-8 text-lg text-gray-600">Votre recette a été bien reçue. Nos chefs (ou le chat) vont la valider très vite.</p>
+          <h2 className={`text-3xl font-bold mb-4 ${isKitty ? 'text-hk-red-dark' : 'text-gray-800'}`}>
+            {isKitty ? "Miam ! C'est envoyé ! 😻" : "Miam ! C'est envoyé !"}
+          </h2>
+          <p className={`mb-8 text-lg ${isKitty ? 'text-hk-red-light' : 'text-gray-600'}`}>
+            {isKitty ? "Votre recette a été bien reçue. Hello Kitty va la valider très vite !" : "Votre recette a été bien reçue. Nos chefs (ou le chat) vont la valider très vite."}
+          </p>
           <button
             onClick={() => setSubmitted(false)}
             className={styles.buttonPrimary}
           >
-            Proposer une autre recette
+            {isKitty ? "Proposer une autre merveille ✨" : "Proposer une autre recette"}
           </button>
         </div>
       </div>
@@ -294,8 +312,16 @@ function SubmitRecipePage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <h1 className="text-4xl font-display font-bold mb-2">Partagez votre Recette</h1>
-          <p className="opacity-90 text-lg">Faites découvrir vos talents culinaires à la communauté</p>
+          <h1 className="text-4xl font-display font-bold mb-2">
+            {isKitty
+              ? (isFoodMode ? "🎀 Partagez votre Recette 🎀" : "🍸 Partagez votre Cocktail 🍸")
+              : (isFoodMode ? "Partagez votre Recette" : "Partagez votre Cocktail")}
+          </h1>
+          <p className="opacity-90 text-lg">
+            {isKitty
+              ? (isFoodMode ? "Faites briller vos talents culinaires ✨" : "Faites briller vos talents de mixologue ✨")
+              : (isFoodMode ? "Faites découvrir vos talents culinaires à la communauté" : "Faites découvrir vos talents de mixologue à la communauté")}
+          </p>
         </div>
 
         <div className="p-6 md:p-10 space-y-10">
@@ -303,20 +329,22 @@ function SubmitRecipePage() {
           {/* Section 1: Informations Générales */}
           <section>
             <h2 className={styles.sectionTitle}>
-              <PhotoIcon className="w-6 h-6" />
-              La Carte d'Identité
+              {isKitty ? <span className="text-2xl">📸</span> : <PhotoIcon className="w-6 h-6" />}
+              {isKitty
+                ? (isFoodMode ? "La Carte d'Identité Magique" : "La Carte du Cocktail Magique")
+                : (isFoodMode ? "La Carte d'Identité" : "La Carte du Cocktail")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
-                  <label className={styles.label}>Nom du plat</label>
+                  <label className={styles.label}>Nom de la recette</label>
                   <input
                     type="text"
                     name="nom"
                     value={recipe.nom}
                     onChange={handleInputChange}
                     className={styles.input}
-                    placeholder="Ex: Le fameux gâteau au chocolat..."
+                    placeholder={isFoodMode ? "Ex: Le fameux gâteau au chocolat..." : "Ex: Mojito Royal..."}
                   />
                 </div>
                 <div>
@@ -328,10 +356,11 @@ function SubmitRecipePage() {
                       onChange={handleInputChange}
                       className={`${styles.input} appearance-none`}
                     >
-                      <option value="aperitif">🥜 Apéritif</option>
-                      <option value="entree">🥗 Entrée</option>
-                      <option value="plat">🥘 Plat Principal</option>
-                      <option value="dessert">🍰 Dessert</option>
+                      {categories.map(cat => (
+                        <option key={cat} value={cat}>
+                          {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                        </option>
+                      ))}
                     </select>
                     <ChevronUpDownIcon className="w-5 h-5 absolute right-4 top-1/2 transform -translate-y-1/2 opacity-50 pointer-events-none" />
                   </div>
@@ -374,8 +403,10 @@ function SubmitRecipePage() {
           {/* Section 2: Temps & Matériel & Tags */}
           <section>
             <h2 className={styles.sectionTitle}>
-              <ClockIcon className="w-6 h-6" />
-              En Cuisine
+              {isKitty ? <span className="text-2xl">⏰</span> : <ClockIcon className="w-6 h-6" />}
+              {isKitty
+                ? (isFoodMode ? "En Cuisine & Paillettes" : "Au Bar & Paillettes")
+                : (isFoodMode ? "En Cuisine" : "Au Bar")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Temps */}
@@ -393,17 +424,19 @@ function SubmitRecipePage() {
                       placeholder="0"
                     />
                   </div>
-                  <div className="flex-1">
-                    <span className="text-xs uppercase font-bold opacity-50 mb-1 block">Cuisson (min)</span>
-                    <input
-                      type="number"
-                      name="cuisson"
-                      value={recipe.cuisson}
-                      onChange={handleInputChange}
-                      className={styles.input}
-                      placeholder="0"
-                    />
-                  </div>
+                  {isFoodMode && (
+                    <div className="flex-1">
+                      <span className="text-xs uppercase font-bold opacity-50 mb-1 block">Cuisson (min)</span>
+                      <input
+                        type="number"
+                        name="cuisson"
+                        value={recipe.cuisson}
+                        onChange={handleInputChange}
+                        className={styles.input}
+                        placeholder="0"
+                      />
+                    </div>
+                  )}
                 </div>
                 {recipe.total && (
                   <div className={`mt-3 text-sm font-medium text-center py-2 rounded-lg ${isKitty ? 'bg-hk-pink-pale text-hk-red-dark' : 'bg-food-yellow/20 text-food-dark'}`}>
@@ -459,8 +492,8 @@ function SubmitRecipePage() {
           {/* Section 3: Ingrédients */}
           <section>
             <h2 className={styles.sectionTitle}>
-              <span className="text-2xl">🥕</span>
-              Les Ingrédients
+              <span className="text-2xl">{isKitty ? "🍓" : "🥕"}</span>
+              {isKitty ? "Les Ingrédients Mignons" : "Les Ingrédients"}
             </h2>
             <div className="space-y-3">
               {recipe.ingredients.map((ing, index) => (
@@ -560,8 +593,8 @@ function SubmitRecipePage() {
           {/* Section 4: Étapes */}
           <section>
             <h2 className={styles.sectionTitle}>
-              <FireIcon className="w-6 h-6" />
-              La Préparation
+              {isKitty ? <span className="text-2xl">🔥</span> : <FireIcon className="w-6 h-6" />}
+              {isKitty ? "La Préparation Secrète" : "La Préparation"}
             </h2>
             <div className="space-y-4">
               {recipe.etapes.map((step, index) => (
@@ -608,7 +641,7 @@ function SubmitRecipePage() {
               onClick={handleSubmit}
               className={`${styles.buttonPrimary} w-full text-lg`}
             >
-              <span>Envoyer ma recette au Chef</span>
+              <span>{isKitty ? "✨ Envoyer ma recette magique ✨" : "Envoyer ma recette au Chef"}</span>
             </button>
           </div>
 
@@ -618,7 +651,7 @@ function SubmitRecipePage() {
       {/* Admin Link */}
       <div className="mt-12 text-center pb-8">
         <Link
-          to="/admin/food"
+          to={isFoodMode ? "/admin/food" : "/admin/cocktails"}
           className={`text-sm font-medium opacity-40 hover:opacity-100 transition-all ${isKitty ? 'text-hk-red-dark' : 'text-food-dark'}`}
         >
           🔒 Accès Dashboard Admin

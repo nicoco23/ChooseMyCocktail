@@ -97,7 +97,7 @@ export const foodService = {
    */
   getAllIngredients: async () => {
     try {
-      const response = await fetch(API_INGREDIENTS_URL);
+      const response = await fetch(`${API_INGREDIENTS_URL}?kind=food`);
       const data = await response.json();
       return (data.data || []).sort((a, b) => a.localeCompare(b));
     } catch (e) {

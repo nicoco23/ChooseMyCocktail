@@ -6,13 +6,24 @@ function LandingPage() {
   const { theme } = useTheme();
 
   return (
-    <div className={`min-h-screen flex flex-col items-center justify-center p-4 ${theme === 'kitty' ? "bg-hk-pink-pale font-display bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] text-hk-red-dark" : "bg-slate-900 text-slate-100"}`}>
-      <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-12 text-center">
-        <span className={`block ${theme === 'kitty' ? 'text-hk-red-dark drop-shadow-md' : 'text-white'}`}>Choose My</span>
-        <span className={`block bg-clip-text text-transparent ${theme === 'kitty' ? 'bg-gradient-to-r from-hk-pink-hot to-hk-red-light' : 'bg-gradient-to-r from-amber-500 to-rose-500'}`}>
-          Experience
-        </span>
-      </h1>
+    <div className={`min-h-screen flex flex-col items-center justify-center p-4 ${theme === 'kitty' ? "bg-hk-pink-pale font-display bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMjAnIGhlaWdodD0nMTIwJyB2aWV3Qm94PScwIDAgMTIwIDEyMCc+PHRleHQgeD0nMzAnIHk9JzMwJyBmb250LXNpemU9JzMwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjM1ZW0nPvCfjoA8L3RleHQ+PHRleHQgeD0nOTAnIHk9JzkwJyBmb250LXNpemU9JzMwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjM1ZW0nPvCfjoA8L3RleHQ+PC9zdmc+')]" : "bg-slate-900 text-slate-100"}`}>
+      {theme === 'kitty' ? (
+        <div className="relative inline-block mb-12">
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-center px-10 py-6 bg-white/80 backdrop-blur-md rounded-[3rem] border-4 border-hk-pink-light shadow-[0_0_30px_rgba(255,255,255,0.8)]">
+            <span className="block text-hk-red-dark drop-shadow-md">Choose My</span>
+            <span className="block bg-clip-text text-transparent bg-gradient-to-r from-hk-pink-hot to-hk-red-light">
+              Experience
+            </span>
+          </h1>
+        </div>
+      ) : (
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-12 text-center">
+          <span className="block text-white">Choose My</span>
+          <span className="block bg-clip-text text-transparent bg-gradient-to-r from-amber-500 to-rose-500">
+            Experience
+          </span>
+        </h1>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
         {/* Cocktail Card */}

@@ -25,7 +25,9 @@ class ItemRepository {
             (SELECT json_group_array(json_object('titre', s.title, 'description', s.description))
              FROM item_steps s
              WHERE s.item_id = i.id
-             ORDER BY s.step_order) as steps_json
+             ORDER BY s.step_order) as steps_json,
+            (SELECT AVG(rating) FROM ratings WHERE item_id = i.id) as avg_rating,
+            (SELECT COUNT(*) FROM ratings WHERE item_id = i.id) as rating_count
             FROM items i
             WHERE 1=1
         `;
@@ -82,7 +84,9 @@ class ItemRepository {
             (SELECT json_group_array(json_object('titre', s.title, 'description', s.description))
              FROM item_steps s
              WHERE s.item_id = i.id
-             ORDER BY s.step_order) as steps_json
+             ORDER BY s.step_order) as steps_json,
+            (SELECT AVG(rating) FROM ratings WHERE item_id = i.id) as avg_rating,
+            (SELECT COUNT(*) FROM ratings WHERE item_id = i.id) as rating_count
             FROM items i
             WHERE i.id = ?
         `;
@@ -317,18 +321,85 @@ class ItemRepository {
             steps,
             tags,
             equipment,
+            avg_rating: row.avg_rating || 0,
+            rating_count: row.rating_count || 0,
             created_at: row.created_at,
             updated_at: row.updated_at
         };
     }
 
     /**
-     * Get all unique ingredients
+     * Get all unique ingredients, optionally filtered by item kind
+     * @param {string} [kind] - 'beverage' or 'food'
      * @returns {Promise<Array<string>>}
      */
-    async getAllIngredients() {
-        const rows = await db.all('SELECT DISTINCT name FROM ingredients ORDER BY name');
+    async getAllIngredients(kind) {
+        let sql = 'SELECT DISTINCT name FROM ingredients ORDER BY name';
+        const params = [];
+
+        if (kind) {
+            sql = `
+                SELECT DISTINCT ing.name
+                FROM ingredients ing
+                JOIN item_ingredients ii ON ing.id = ii.ingredient_id
+                JOIN items i ON ii.item_id = i.id
+                WHERE i.kind = ?
+                ORDER BY ing.name
+            `;
+            params.push(kind);
+        }
+
+        const rows = await db.all(sql, params);
         return rows.map(r => r.name);
+    }
+
+    // --- User Interactions ---
+
+    async toggleFavorite(userId, itemId) {
+        const existing = await db.get('SELECT 1 FROM favorites WHERE user_id = ? AND item_id = ?', [userId, itemId]);
+        if (existing) {
+            await db.run('DELETE FROM favorites WHERE user_id = ? AND item_id = ?', [userId, itemId]);
+            return { favorited: false };
+        } else {
+            await db.run('INSERT INTO favorites (user_id, item_id) VALUES (?, ?)', [userId, itemId]);
+            return { favorited: true };
+        }
+    }
+
+    async getFavorites(userId) {
+        const sql = `
+            SELECT i.*, f.created_at as favorited_at
+            FROM items i
+            JOIN favorites f ON i.id = f.item_id
+            WHERE f.user_id = ?
+            ORDER BY f.created_at DESC
+        `;
+        const rows = await db.all(sql, [userId]);
+        return rows.map(row => this.formatItem(row));
+    }
+
+    async setRating(userId, itemId, rating, comment) {
+        const sql = `
+            INSERT INTO ratings (user_id, item_id, rating, comment, updated_at)
+            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+            ON CONFLICT(user_id, item_id) DO UPDATE SET
+                rating = excluded.rating,
+                comment = excluded.comment,
+                updated_at = CURRENT_TIMESTAMP
+        `;
+        await db.run(sql, [userId, itemId, rating, comment]);
+    }
+
+    async getUserRatings(userId) {
+        const sql = `
+            SELECT i.*, r.rating, r.comment, r.updated_at as rated_at
+            FROM items i
+            JOIN ratings r ON i.id = r.item_id
+            WHERE r.user_id = ?
+            ORDER BY r.updated_at DESC
+        `;
+        const rows = await db.all(sql, [userId]);
+        return rows.map(row => ({ ...this.formatItem(row), userRating: row.rating, userComment: row.comment }));
     }
 }
 

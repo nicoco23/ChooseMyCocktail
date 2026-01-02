@@ -143,3 +143,29 @@ CREATE TABLE IF NOT EXISTS pairing_events (
 CREATE INDEX IF NOT EXISTS idx_pairing_events_food ON pairing_events(food_id);
 CREATE INDEX IF NOT EXISTS idx_pairing_events_beverage ON pairing_events(beverage_id);
 CREATE INDEX IF NOT EXISTS idx_pairing_events_session ON pairing_events(session_id);
+
+-- Favorites
+CREATE TABLE IF NOT EXISTS favorites (
+    user_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, item_id),
+    FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_favorites_user ON favorites(user_id);
+
+-- Ratings
+CREATE TABLE IF NOT EXISTS ratings (
+    user_id INTEGER NOT NULL,
+    item_id INTEGER NOT NULL,
+    rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, item_id),
+    FOREIGN KEY(item_id) REFERENCES items(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_ratings_user ON ratings(user_id);
+CREATE INDEX IF NOT EXISTS idx_ratings_item ON ratings(item_id);

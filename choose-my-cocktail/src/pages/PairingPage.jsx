@@ -62,21 +62,28 @@ const PairingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-hk-pink-pale p-4 md:p-8 font-sans bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+    <div className="min-h-screen bg-hk-pink-pale p-4 md:p-8 font-sans bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMjAnIGhlaWdodD0nMTIwJyB2aWV3Qm94PScwIDAgMTIwIDEyMCc+PHRleHQgeD0nMzAnIHk9JzMwJyBmb250LXNpemU9JzMwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjM1ZW0nPvCfjoA8L3RleHQ+PHRleHQgeD0nOTAnIHk9JzkwJyBmb250LXNpemU9JzMwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkeT0nLjM1ZW0nPvCfjoA8L3RleHQ+PC9zdmc+')]">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10 animate-bounce">
-          <h1 className="text-6xl font-display font-bold text-hk-red-dark mb-2 drop-shadow-md">
-            🎀 Perfect Match 🎀
-          </h1>
-          <p className="text-hk-red-light text-2xl font-medium bg-white/50 inline-block px-6 py-2 rounded-full backdrop-blur-sm">
-            Trouve la boisson idéale pour ton plat ! ✨
+        <div className="text-center mb-10 relative pt-8 px-4">
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-4xl md:text-6xl animate-sparkle">🎀</div>
+          <div className="relative inline-block mb-6">
+            <h1 className="text-4xl md:text-6xl font-display font-bold text-hk-red-dark drop-shadow-sm animate-gentle-bounce relative px-8 py-4 bg-white/80 backdrop-blur-md rounded-full border-4 border-hk-pink-light shadow-[0_0_20px_rgba(255,255,255,0.8)]">
+              🎀 Perfect Match 🎀
+              <div className="absolute -top-3 -right-3 md:-top-6 md:-right-6 text-2xl md:text-4xl animate-float">💕</div>
+              <div className="absolute -top-3 -left-3 md:-top-6 md:-left-6 text-2xl md:text-4xl animate-float" style={{ animationDelay: '0.5s' }}>✨</div>
+            </h1>
+          </div>
+          <p className="text-hk-red-light text-lg md:text-2xl font-medium bg-gradient-to-r from-white/90 via-hk-pink-pale/80 to-white/90 inline-block px-6 md:px-8 py-2 md:py-3 rounded-full backdrop-blur-md border-2 md:border-4 border-white shadow-lg">
+            Trouve la boisson idéale pour ton plat ! ✨💖
           </p>
         </div>
 
-        <div className="bg-white/90 backdrop-blur-md rounded-[3rem] shadow-[0_20px_50px_rgba(255,105,180,0.3)] border-8 border-hk-pink-light p-6 md:p-10 mb-12 relative overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
-          <div className="absolute top-0 right-0 -mt-8 -mr-8 text-8xl opacity-20 rotate-12 select-none">🍓</div>
-          <div className="absolute bottom-0 left-0 -mb-8 -ml-8 text-8xl opacity-20 -rotate-12 select-none">🧁</div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-9xl opacity-5 pointer-events-none">😻</div>
+        <div className="bg-gradient-to-br from-white/95 via-hk-pink-pale/20 to-white/95 backdrop-blur-md rounded-[2rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(255,105,180,0.4)] border-4 md:border-[10px] border-hk-pink-light p-4 md:p-10 mb-12 relative overflow-hidden transform hover:scale-[1.01] transition-transform duration-300">
+          <div className="absolute top-0 right-0 -mt-6 -mr-6 md:-mt-8 md:-mr-8 text-5xl md:text-8xl opacity-20 rotate-12 select-none animate-sparkle">🍓</div>
+          <div className="absolute bottom-0 left-0 -mb-6 -ml-6 md:-mb-8 md:-ml-8 text-5xl md:text-8xl opacity-20 -rotate-12 select-none animate-sparkle" style={{ animationDelay: '0.5s' }}>🧁</div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-7xl md:text-9xl opacity-5 pointer-events-none">😻</div>
+          <div className="hidden md:block absolute top-10 right-20 text-5xl opacity-30 animate-float">🎀</div>
+          <div className="absolute bottom-10 left-20 text-5xl opacity-30 animate-float" style={{ animationDelay: '1s' }}>💞</div>
 
           <h2 className="text-3xl font-bold text-hk-red-dark mb-8 flex items-center justify-center gap-3">
             <span className="text-4xl">🍽️</span> Qu'est-ce qu'on mange ?
